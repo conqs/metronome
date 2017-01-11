@@ -27,10 +27,22 @@ public class LibraryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_library);
 
+        init();
+
+        // create the media browser and attempt connecting to the service
+        mMediaBrowserCompat = new MediaBrowserCompat(this, new ComponentName(this, MediaService.class),
+                mConnectionCallback, getIntent().getExtras());
+        mMediaBrowserCompat.connect();
+
+    }
+
+    // init requirements for service connection
+    private void init() {
+
         mControllerCallback = new MediaControllerCompat.Callback() {
             @Override
             public void onPlaybackStateChanged(PlaybackStateCompat state) {
-
+                // TODO - fill this and override other methods from callback that may be useful
             }
         };
 
@@ -40,7 +52,9 @@ public class LibraryActivity extends AppCompatActivity {
                 try {
                     mMediaControllerCompat = new MediaControllerCompat(LibraryActivity.this, mMediaBrowserCompat.getSessionToken());
                     mMediaControllerCompat.registerCallback(mControllerCallback);
-                    setSupportMediaController(mMediaControllerCompat);
+
+                    // TODO check what is the non-deprecated counterpart
+                    // setSupportMediaController(mMediaControllerCompat);
 
                     Toast.makeText(LibraryActivity.this, "Service connected!", Toast.LENGTH_LONG).show();
                 } catch (RemoteException e) {
@@ -58,11 +72,6 @@ public class LibraryActivity extends AppCompatActivity {
                 Toast.makeText(LibraryActivity.this, "Service disconnected!", Toast.LENGTH_LONG).show();
             }
         };
-
-        mMediaBrowserCompat = new MediaBrowserCompat(this, new ComponentName(this, MediaService.class),
-                mConnectionCallback, getIntent().getExtras());
-        mMediaBrowserCompat.connect();
-
     }
 
     @Override

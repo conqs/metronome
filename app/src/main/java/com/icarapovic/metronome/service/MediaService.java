@@ -68,6 +68,8 @@ public class MediaService extends MediaBrowserServiceCompat implements
 
         mMediaSession = new MediaSessionCompat(getApplicationContext(), TAG, mediaButtonReceiver, null);
         mMediaSession.setCallback(mediaSessionCallback);
+
+        // flags telling that this media session reacts to media button actions (play, pause, etc)
         mMediaSession.setFlags(
                 MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS | MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
 
@@ -106,7 +108,7 @@ public class MediaService extends MediaBrowserServiceCompat implements
     @Nullable
     @Override
     public BrowserRoot onGetRoot(@NonNull String clientPackageName, int clientUid, @Nullable Bundle rootHints) {
-        // if this app requests, return BrowserRoot object to browse media
+        // if this app requests media root, return BrowserRoot object to browse media
         if (TextUtils.equals(clientPackageName, getPackageName())) {
             return new BrowserRoot(getString(R.string.app_name), null);
         }
@@ -116,7 +118,8 @@ public class MediaService extends MediaBrowserServiceCompat implements
 
     @Override
     public void onLoadChildren(@NonNull String parentId, @NonNull Result<List<MediaBrowserCompat.MediaItem>> result) {
-        // TODO return items
+        // TODO need to find what is to be done here... documentation is ofc non-existing
+
         result.sendResult(null);
     }
 
@@ -231,14 +234,14 @@ public class MediaService extends MediaBrowserServiceCompat implements
 
     private void initMediaSessionMetadata() {
 
-        // TODO everything
+        // TODO fill with actual metadata from playing item, item needs to be sent probably through params
         MediaMetadataCompat.Builder metadataBuilder = new MediaMetadataCompat.Builder();
 
         metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON, BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher));
         metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher));
         metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ART, BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher));
-        metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, "Beo Dat May Troi");
-        metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE, "Singer: Anh Tho");
+        metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, "Such Song");
+        metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE, "Much Singer");
 
         mMediaSession.setMetadata(metadataBuilder.build());
     }
