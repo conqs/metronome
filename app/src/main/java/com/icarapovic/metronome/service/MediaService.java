@@ -113,7 +113,7 @@ public class MediaService extends Service implements
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
+        mMediaPlayer.release();
         AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         audioManager.abandonAudioFocus(this);
         unregisterReceiver(mHeadphonesReceiver);
