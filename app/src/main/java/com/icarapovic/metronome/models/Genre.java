@@ -1,6 +1,6 @@
 package com.icarapovic.metronome.models;
 
-class Genre {
+public class Genre {
 
     public Genre(int genreId, String genreName) {
         mGenreId = genreId;

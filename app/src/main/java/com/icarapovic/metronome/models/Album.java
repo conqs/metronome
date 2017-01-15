@@ -1,6 +1,6 @@
 package com.icarapovic.metronome.models;
 
-class Album {
+public class Album {
 
     private Album(int albumId, String albumTitle, Artist artist, int artistId, int numberOfSongs) {
         mAlbumId = albumId;

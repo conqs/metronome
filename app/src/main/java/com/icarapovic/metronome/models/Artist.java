@@ -1,6 +1,6 @@
 package com.icarapovic.metronome.models;
 
-class Artist {
+public class Artist {
 
     private Artist(int id, String artistName, int numberOfAlbums, int numberOfSongs) {
         mId = id;

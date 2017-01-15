@@ -2,7 +2,7 @@ package com.icarapovic.metronome.models;
 
 import com.icarapovic.metronome.utils.MediaUtils;
 
-class Song {
+public class Song {
 
     private Song(int id, int albumId, Album album, int artistId, Artist artist, long duration, int genreId, Genre genre) {
         mId = id;
