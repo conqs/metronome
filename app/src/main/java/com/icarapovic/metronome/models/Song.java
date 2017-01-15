@@ -4,7 +4,17 @@ import com.icarapovic.metronome.utils.MediaUtils;
 
 public class Song {
 
-    private Song(int id, int albumId, Album album, int artistId, Artist artist, long duration, int genreId, Genre genre) {
+    private Song(
+            int id,
+            int albumId,
+            Album album,
+            int artistId,
+            Artist artist,
+            long duration,
+            int genreId,
+            Genre genre,
+            String path) {
+
         mId = id;
         mAlbumId = albumId;
         mAlbum = album;
@@ -13,6 +23,7 @@ public class Song {
         mDuration = duration;
         mGenreId = genreId;
         mGenre = genre;
+        mPath = path;
     }
 
     private final int mId;
@@ -23,6 +34,7 @@ public class Song {
     private final long mDuration;
     private final int mGenreId;
     private final Genre mGenre;
+    private final String mPath;
 
     private static class Builder {
         private int mId;
@@ -33,6 +45,7 @@ public class Song {
         private long mDuration;
         private int mGenreId;
         private Genre mGenre;
+        private String mPath;
 
         public Builder setId(int id) {
             mId = id;
@@ -74,8 +87,13 @@ public class Song {
             return this;
         }
 
+        public Builder setPath(String path) {
+            mPath = path;
+            return this;
+        }
+
         public Song build() {
-            return new Song(mId, mAlbumId, mAlbum, mArtistId, mArtist, mDuration, mGenreId, mGenre);
+            return new Song(mId, mAlbumId, mAlbum, mArtistId, mArtist, mDuration, mGenreId, mGenre, mPath);
         }
 
     }
@@ -112,6 +130,10 @@ public class Song {
         return mGenre;
     }
 
+    public String getPath() {
+        return mPath;
+    }
+
     @Override
     public String toString() {
         return "Song [ id=" + mId +
@@ -119,6 +141,7 @@ public class Song {
                 ", artistId=" + mArtistId +
                 ", duration=" + MediaUtils.formatDuration(mDuration) +
                 ", genreId=" + mGenreId +
+                ", path=" + mPath +
                 " ]";
     }
 }
