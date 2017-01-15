@@ -17,4 +17,9 @@ class Genre {
     public String getGenreName() {
         return mGenreName;
     }
+
+    @Override
+    public String toString() {
+        return "Genre [ id=" + mGenreId + ", name=" + mGenreName + " ]";
+    }
 }

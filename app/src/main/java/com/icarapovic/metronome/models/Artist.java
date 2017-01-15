@@ -18,7 +18,7 @@ class Artist {
         return mId;
     }
 
-    public String getArtistName() {
+    String getArtistName() {
         return mArtistName;
     }
 
@@ -62,6 +62,11 @@ class Artist {
         }
     }
 
-
-
+    @Override
+    public String toString() {
+        return "Artist [ id=" + mId
+                + ", name=" + mArtistName
+                + ", numOfAlbums=" + mNumberOfAlbums
+                + ", numOfSongs=" + mNumberOfSongs + " ]";
+    }
 }

@@ -72,4 +72,12 @@ class Album {
     public int getNumberOfSongs() {
         return mNumberOfSongs;
     }
+
+    @Override
+    public String toString() {
+        return "Album [ id=" + mAlbumId
+                + ", title=" + mAlbumTitle
+                + ", artist=" + mArtist.getArtistName()
+                + ", numOfSongs=" + mNumberOfSongs + " ]";
+    }
 }
