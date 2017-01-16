@@ -6,14 +6,15 @@ public class Song {
 
     private Song(
             int id,
+            String title,
             int albumId,
-            Album album,
+            String album,
             int artistId,
-            Artist artist,
+            String artist,
             long duration,
-            int genreId,
-            Genre genre,
-            String path) {
+            String path,
+            long size,
+            long dateAdded) {
 
         mId = id;
         mAlbumId = albumId;
@@ -21,31 +22,34 @@ public class Song {
         mArtistId = artistId;
         mArtist = artist;
         mDuration = duration;
-        mGenreId = genreId;
-        mGenre = genre;
         mPath = path;
+        mFileSize = size;
+        mDateAdded = dateAdded;
+        mTitle = title;
     }
 
     private final int mId;
+    private final String mTitle;
     private final int mAlbumId;
-    private final Album mAlbum;
+    private final String mAlbum;
     private final int mArtistId;
-    private final Artist mArtist;
+    private final String mArtist;
     private final long mDuration;
-    private final int mGenreId;
-    private final Genre mGenre;
     private final String mPath;
+    private final long mFileSize;
+    private final long mDateAdded;
 
-    private static class Builder {
+    public static class Builder {
         private int mId;
+        private String mTitle;
         private int mAlbumId;
-        private Album mAlbum;
+        private String mAlbum;
         private int mArtistId;
-        private Artist mArtist;
+        private String mArtist;
         private long mDuration;
-        private int mGenreId;
-        private Genre mGenre;
         private String mPath;
+        private long mFileSize;
+        private long mDateAdded;
 
         public Builder setId(int id) {
             mId = id;
@@ -67,23 +71,18 @@ public class Song {
             return this;
         }
 
-        public Builder setGenreId(int genreId) {
-            mGenreId = genreId;
-            return this;
-        }
-
-        public Builder setAlbum(Album album) {
+        public Builder setAlbum(String album) {
             mAlbum = album;
             return this;
         }
 
-        public Builder setArtist(Artist artist) {
+        public Builder setArtist(String artist) {
             mArtist = artist;
             return this;
         }
 
-        public Builder setGenre(Genre genre) {
-            mGenre = genre;
+        public Builder setDateAdded(long dateAdded) {
+            mDateAdded = dateAdded;
             return this;
         }
 
@@ -92,14 +91,28 @@ public class Song {
             return this;
         }
 
+        public Builder setFileSize(long fileSize){
+            mFileSize = fileSize;
+            return this;
+        }
+
+        public Builder setTitle(String title){
+            mTitle = title;
+            return this;
+        }
+
         public Song build() {
-            return new Song(mId, mAlbumId, mAlbum, mArtistId, mArtist, mDuration, mGenreId, mGenre, mPath);
+            return new Song(mId, mTitle, mAlbumId, mAlbum, mArtistId, mArtist, mDuration, mPath, mFileSize, mDateAdded);
         }
 
     }
 
     public int getId() {
         return mId;
+    }
+
+    public String getTitle() {
+        return mTitle;
     }
 
     public int getAlbumId() {
@@ -114,34 +127,36 @@ public class Song {
         return mDuration;
     }
 
-    public int getGenreId() {
-        return mGenreId;
-    }
-
-    public Album getAlbum() {
+    public String getAlbumName() {
         return mAlbum;
     }
 
-    public Artist getArtist() {
+    public String getArtistName() {
         return mArtist;
     }
 
-    public Genre getGenre() {
-        return mGenre;
+    public long getDateAdded() {
+        return mDateAdded;
     }
 
     public String getPath() {
         return mPath;
     }
 
+    public long getFileSize() {
+        return mFileSize;
+    }
+
     @Override
     public String toString() {
         return "Song [ id=" + mId +
-                ", albumId=" + mAlbumId +
-                ", artistId=" + mArtistId +
+                ", title=" + mTitle +
+                ", album=" + mAlbum +
+                ", artist=" + mArtist +
                 ", duration=" + MediaUtils.formatDuration(mDuration) +
-                ", genreId=" + mGenreId +
+                ", dateAdded=" + mDateAdded +
                 ", path=" + mPath +
+                ", fileSize=" + mFileSize +
                 " ]";
     }
 }

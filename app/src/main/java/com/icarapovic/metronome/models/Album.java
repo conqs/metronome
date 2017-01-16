@@ -2,26 +2,26 @@ package com.icarapovic.metronome.models;
 
 public class Album {
 
-    private Album(int albumId, String albumTitle, Artist artist, int artistId, int numberOfSongs) {
+    private Album(int albumId, String albumTitle, String artist, int numberOfSongs, String albumArt) {
         mAlbumId = albumId;
         mAlbumTitle = albumTitle;
         mArtist = artist;
-        mArtistId = artistId;
         mNumberOfSongs = numberOfSongs;
+        mAlbumArt = albumArt;
     }
 
     private final int mAlbumId;
     private final String mAlbumTitle;
-    private final Artist mArtist;
-    private final int mArtistId;
+    private final String mArtist;
     private final int mNumberOfSongs;
+    private final String mAlbumArt;
 
-    private static class Builder {
+    public static class Builder {
         private int mAlbumId;
         private String mAlbumTitle;
-        private Artist mArtist;
-        private int mArtistId;
+        private String mArtist;
         private int mNumberOfSongs;
+        private String mAlbumArt;
 
         public Builder setAlbumId(int id){
             mAlbumId = id;
@@ -33,13 +33,8 @@ public class Album {
             return this;
         }
 
-        public Builder setArtist(Artist artist){
+        public Builder setArtist(String artist){
             mArtist = artist;
-            return this;
-        }
-
-        public Builder setArtistiId(int artistId){
-            mArtistId = artistId;
             return this;
         }
 
@@ -48,8 +43,13 @@ public class Album {
             return this;
         }
 
+        public Builder setAlbumArt(String albumArt){
+            mAlbumArt = albumArt;
+            return this;
+        }
+
         public Album build(){
-            return new Album(mAlbumId, mAlbumTitle, mArtist, mArtistId, mNumberOfSongs);
+            return new Album(mAlbumId, mAlbumTitle, mArtist, mNumberOfSongs, mAlbumArt);
         }
     }
 
@@ -61,23 +61,23 @@ public class Album {
         return mAlbumTitle;
     }
 
-    public Artist getArtist() {
+    public String getArtist() {
         return mArtist;
-    }
-
-    public int getArtistId() {
-        return mArtistId;
     }
 
     public int getNumberOfSongs() {
         return mNumberOfSongs;
     }
 
+    public String getAlbumArt() {
+        return mAlbumArt;
+    }
+
     @Override
     public String toString() {
         return "Album [ id=" + mAlbumId
                 + ", title=" + mAlbumTitle
-                + ", artist=" + mArtist.getArtistName()
+                + ", artist=" + mArtist
                 + ", numOfSongs=" + mNumberOfSongs + " ]";
     }
 }

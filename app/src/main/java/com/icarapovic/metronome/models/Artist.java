@@ -18,7 +18,7 @@ public class Artist {
         return mId;
     }
 
-    String getArtistName() {
+    public String getArtistName() {
         return mArtistName;
     }
 
@@ -30,7 +30,7 @@ public class Artist {
         return mNumberOfSongs;
     }
 
-    private static class Builder {
+    public static class Builder {
 
         private int mId;
         private String mArtistName;
