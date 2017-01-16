@@ -3,6 +3,8 @@ package com.icarapovic.metronome.utils;
 
 public class MediaUtils {
 
+    private MediaUtils(){}
+
     private static final String DELIMITER = ":";
 
     /**
