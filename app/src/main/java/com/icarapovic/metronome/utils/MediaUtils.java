@@ -1,6 +1,12 @@
 package com.icarapovic.metronome.utils;
 
 
+import android.content.ContentUris;
+import android.net.Uri;
+import android.widget.ImageView;
+
+import com.bumptech.glide.Glide;
+
 public class MediaUtils {
 
     private MediaUtils(){}
@@ -44,5 +50,11 @@ public class MediaUtils {
         sb.append(seconds);
 
         return sb.toString();
+    }
+
+    public static void loadAlbumArt(int albumId, ImageView view){
+        Uri artworkUri = Uri.parse("content://media/external/audio/albumart");
+        Uri path = ContentUris.withAppendedId(artworkUri, albumId);
+        Glide.with(view.getContext()).load(path).into(view);
     }
 }
