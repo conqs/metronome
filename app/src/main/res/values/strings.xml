@@ -2,4 +2,5 @@
     <string name="app_name">Metronome</string>
     <string name="play">Play</string>
     <string name="pause">Pause</string>
+    <string name="info_permissions_external_storage">We need this permission to read your music library!</string>
 </resources>
