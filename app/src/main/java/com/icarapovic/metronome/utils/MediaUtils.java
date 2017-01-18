@@ -30,20 +30,16 @@ public class MediaUtils {
         int seconds = (int) (duration / 1000) - (hours * 60 * 60) - (minutes * 60);
 
         if(hours != 0){
-            if(hours < 9){
-               sb.append("0");
-            }
-
             sb.append(hours).append(DELIMITER);
         }
 
-        if(minutes < 9){
+        if (minutes < 10) {
             sb.append("0");
         }
 
         sb.append(minutes).append(DELIMITER);
 
-        if(seconds < 9){
+        if (seconds < 10) {
             sb.append("0");
         }
 
