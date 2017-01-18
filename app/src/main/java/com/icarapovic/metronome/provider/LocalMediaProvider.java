@@ -59,6 +59,7 @@ public class LocalMediaProvider implements MediaProvider {
                         .setDuration(cursor.getLong(6))
                         .setPath(cursor.getString(7))
                         .setDateAdded(cursor.getLong(8))
+                        .setFileSize(cursor.getLong(9))
                         .build();
 
                 // fill cache

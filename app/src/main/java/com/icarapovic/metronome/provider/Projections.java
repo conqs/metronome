@@ -16,7 +16,8 @@ public interface Projections {
             MediaStore.Audio.Media.ARTIST,
             MediaStore.Audio.Media.DURATION,
             MediaStore.Audio.Media.DATA,
-            MediaStore.Audio.Media.DATE_ADDED
+            MediaStore.Audio.Media.DATE_ADDED,
+            MediaStore.Audio.Media.SIZE
     };
 
     String[] ARTIST = new String[]{
