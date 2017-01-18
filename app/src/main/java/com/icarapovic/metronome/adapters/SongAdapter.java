@@ -26,12 +26,14 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        // inflate layout into a View and create a new ViewHolder
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_song, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+        // fill ViewHolder with data
         MediaUtils.loadAlbumArt(mSongs.get(position).getAlbumId(), holder.albumArt);
         holder.songTitle.setText(mSongs.get(position).getTitle());
         holder.songArtist.setText(mSongs.get(position).getArtistName());
@@ -39,6 +41,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
 
     @Override
     public int getItemCount() {
+        // size of the data set
         return mSongs.size();
     }
 

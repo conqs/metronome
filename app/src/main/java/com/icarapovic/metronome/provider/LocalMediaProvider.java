@@ -4,8 +4,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
-import android.support.annotation.WorkerThread;
-import android.util.Log;
 
 import com.icarapovic.metronome.models.Album;
 import com.icarapovic.metronome.models.Artist;
@@ -36,8 +34,8 @@ public class LocalMediaProvider implements MediaProvider {
     }
 
     @Override
-    @WorkerThread
     public List<Song> fetchSongs(Context context) {
+        // if cached, return cache immediately
         if (cachedSongList != null) {
             return cachedSongList;
         } else {
@@ -48,6 +46,8 @@ public class LocalMediaProvider implements MediaProvider {
 
         if (cursor != null) {
             Song song;
+
+            // build song object for each db entry
             while (cursor.moveToNext()) {
                 song = new Song.Builder()
                         .setId(cursor.getInt(0))
@@ -60,9 +60,11 @@ public class LocalMediaProvider implements MediaProvider {
                         .setPath(cursor.getString(7))
                         .setDateAdded(cursor.getLong(8))
                         .build();
+
+                // fill cache
                 cachedSongList.add(song);
             }
-
+            // close data set
             cursor.close();
         }
 
@@ -70,7 +72,6 @@ public class LocalMediaProvider implements MediaProvider {
     }
 
     @Override
-    @WorkerThread
     public List<Artist> fetchArtists(Context context) {
 
         if (cachedArtistList != null) {
@@ -101,7 +102,6 @@ public class LocalMediaProvider implements MediaProvider {
     }
 
     @Override
-    @WorkerThread
     public List<Album> fetchAlbums(Context context) {
         if (cachedAlbumList != null) {
             return cachedAlbumList;
@@ -131,7 +131,6 @@ public class LocalMediaProvider implements MediaProvider {
     }
 
     @Override
-    @WorkerThread
     public List<Genre> fetchGenres(Context context) {
         if (cachedGenreList != null) {
             return cachedGenreList;
@@ -152,15 +151,14 @@ public class LocalMediaProvider implements MediaProvider {
     }
 
     @Override
-    @WorkerThread
     public List<Song> fetchSongsFromAlbum(Context context, int albumId) {
         List<Song> songs = new ArrayList<>();
 
         Cursor cursor = context.getContentResolver().query(
                 MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                 Projections.SONG,
-                MediaStore.Audio.Media.ALBUM_ID + " = ?",
-                new String[albumId],
+                MediaStore.Audio.Media.ALBUM_ID + " = ?", // WHERE albumId = ?
+                new String[albumId],  // fills the ? in previous line
                 MediaStore.Audio.AudioColumns.TITLE + " ASC"
         );
 
@@ -188,7 +186,6 @@ public class LocalMediaProvider implements MediaProvider {
     }
 
     @Override
-    @WorkerThread
     public List<Song> fetchSongsFromArtist(Context context, int artistId) {
         List<Song> songs = new ArrayList<>();
 
@@ -224,7 +221,6 @@ public class LocalMediaProvider implements MediaProvider {
     }
 
     @Override
-    @WorkerThread
     public List<Song> fetchSongsFromGenre(Context context, int genreId) {
         List<Song> songs = new ArrayList<>();
 
@@ -262,7 +258,6 @@ public class LocalMediaProvider implements MediaProvider {
     }
 
     @Override
-    @WorkerThread
     public List<Album> getAlbumsFromArtist(Context context, int artistId) {
         List<Album> albums = new ArrayList<>();
 
@@ -274,9 +269,10 @@ public class LocalMediaProvider implements MediaProvider {
                 null
         );
 
-        String artist = null;
+        String artist;
         if (c1 != null) {
             artist = c1.getString(1);
+            c1.close();
         } else {
             return albums;
         }
@@ -310,26 +306,19 @@ public class LocalMediaProvider implements MediaProvider {
 
     @Override
     public void clearCache() {
-        cachedSongList.clear();
         cachedSongList = null;
-
-        cachedAlbumList.clear();
         cachedAlbumList = null;
-
-        cachedArtistList.clear();
         cachedArtistList = null;
-
-        cachedGenreList.clear();
         cachedGenreList = null;
     }
 
     private Cursor getSongCursor(Context context) {
         return context.getContentResolver().query(
-                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                Projections.SONG,
+                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, // user space media
+                Projections.SONG, // columns from MediaStore database
                 null,
                 null,
-                MediaStore.Audio.AudioColumns.TITLE + " ASC"
+                MediaStore.Audio.AudioColumns.TITLE + " ASC" // sort by title ascending
         );
     }
 
@@ -342,7 +331,6 @@ public class LocalMediaProvider implements MediaProvider {
                 MediaStore.Audio.AlbumColumns.ALBUM + " ASC"
         );
     }
-
 
     private Cursor getArtistCursor(Context context) {
         return context.getContentResolver().query(

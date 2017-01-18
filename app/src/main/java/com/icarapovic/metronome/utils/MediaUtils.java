@@ -52,9 +52,16 @@ public class MediaUtils {
         return sb.toString();
     }
 
+    /**
+     * Load album art from MediaStore into an ImageView
+     *
+     * @param albumId ID of the album, retreived from MediaStore
+     * @param view    The view to display album artwork
+     */
     public static void loadAlbumArt(int albumId, ImageView view){
         Uri artworkUri = Uri.parse("content://media/external/audio/albumart");
         Uri path = ContentUris.withAppendedId(artworkUri, albumId);
+        // TODO add placeholder in case no artwork provided
         Glide.with(view.getContext()).load(path).into(view);
     }
 }
