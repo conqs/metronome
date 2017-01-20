@@ -3,6 +3,9 @@ package com.icarapovic.metronome.activities;
 import android.Manifest;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -26,6 +29,12 @@ public class LibraryActivity extends AppCompatActivity implements EasyPermission
     RecyclerView songRecycler;
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
+    @BindView(R.id.drawer_layout)
+    DrawerLayout mDrawerLayout;
+    @BindView(R.id.navigation_view)
+    NavigationView mNavigation;
+
+    private ActionBarDrawerToggle mToggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +57,12 @@ public class LibraryActivity extends AppCompatActivity implements EasyPermission
 
     private void init() {
         setSupportActionBar(mToolbar);
+
+        mToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.open_drawer, R.string.close_drawer);
+        mDrawerLayout.setDrawerListener(mToggle);
+
+        // sync toggle with navigation drawer, showing arrow or hamburger menu
+        mToggle.syncState();
     }
 
     @Override
