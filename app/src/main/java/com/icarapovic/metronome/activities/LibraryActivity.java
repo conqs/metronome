@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 
 import com.icarapovic.metronome.R;
 import com.icarapovic.metronome.adapters.SongAdapter;
@@ -23,6 +24,8 @@ public class LibraryActivity extends AppCompatActivity implements EasyPermission
 
     @BindView(R.id.recycler_song)
     RecyclerView songRecycler;
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +35,8 @@ public class LibraryActivity extends AppCompatActivity implements EasyPermission
         // activate BindView annotations
         ButterKnife.bind(this);
 
+        init();
+
         // if permission missing, ask for it
         if(!EasyPermissions.hasPermissions(this, Manifest.permission.READ_EXTERNAL_STORAGE)){
             EasyPermissions.requestPermissions(this, getString(R.string.info_permissions_external_storage),
@@ -39,6 +44,10 @@ public class LibraryActivity extends AppCompatActivity implements EasyPermission
         } else {
             onContinue();
         }
+    }
+
+    private void init() {
+        setSupportActionBar(mToolbar);
     }
 
     @Override

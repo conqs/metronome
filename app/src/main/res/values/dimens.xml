@@ -7,7 +7,7 @@
     <dimen name="spacing_medium">16dp</dimen>
     <dimen name="spacing_large">32dp</dimen>
     <dimen name="item_height">64dp</dimen>
-
+    <dimen name="toolbar_height">56dp</dimen>
 
 
 </resources>
