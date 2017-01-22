@@ -34,7 +34,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         // fill ViewHolder with data
-        MediaUtils.loadAlbumArt(mSongs.get(position).getAlbumId(), holder.albumArt);
+        MediaUtils.loadAlbumArt(mSongs.get(position).getId(), holder.albumArt);
         holder.songTitle.setText(mSongs.get(position).getTitle());
         holder.songArtist.setText(mSongs.get(position).getArtistName());
     }
