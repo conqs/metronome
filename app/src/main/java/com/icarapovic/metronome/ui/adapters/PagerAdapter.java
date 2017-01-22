@@ -1,4 +1,4 @@
-package com.icarapovic.metronome.adapters;
+package com.icarapovic.metronome.ui.adapters;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;

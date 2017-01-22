@@ -1,4 +1,4 @@
-package com.icarapovic.metronome.activities;
+package com.icarapovic.metronome.ui.activities;
 
 import android.Manifest;
 import android.os.Bundle;
@@ -13,7 +13,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import com.icarapovic.metronome.R;
-import com.icarapovic.metronome.adapters.PagerAdapter;
+import com.icarapovic.metronome.ui.adapters.PagerAdapter;
+import com.icarapovic.metronome.ui.fragments.SongFragment;
 
 import java.util.List;
 
@@ -25,8 +26,7 @@ public class LibraryActivity extends AppCompatActivity implements EasyPermission
 
     private static final int REQUEST_CODE = 100;
 
-    //    @BindView(R.id.recycler_song)
-//    RecyclerView songRecycler;
+
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
     @BindView(R.id.drawer_layout)
@@ -76,7 +76,7 @@ public class LibraryActivity extends AppCompatActivity implements EasyPermission
 
     private void initViewPager() {
         PagerAdapter adapter = new PagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new Fragment(), "Songs");
+        adapter.addFragment(SongFragment.newInstance(), SongFragment.getTitle());
         adapter.addFragment(new Fragment(), "Albums");
         adapter.addFragment(new Fragment(), "Artists");
         adapter.addFragment(new Fragment(), "Genres");
@@ -104,9 +104,6 @@ public class LibraryActivity extends AppCompatActivity implements EasyPermission
 
     // continue after permission check, method is NOT from activity lifecycle
     private void onContinue(){
-        // create adapter and set it to the recycler view
-//        SongAdapter adapter = new SongAdapter(LocalMediaProvider.getInstance().fetchSongs(this));
-//        songRecycler.setLayoutManager(new LinearLayoutManager(this));
-//        songRecycler.setAdapter(adapter);
+
     }
 }

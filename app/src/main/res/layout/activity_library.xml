@@ -6,8 +6,21 @@
     android:layout_height="match_parent"
     android:background="@color/md_grey_900">
 
-    <include
-        layout="@layout/layout_included_app_bar"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/layout_included_app_bar"
+            layout="@layout/included_app_bar"/>
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/view_pager"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
 
     <android.support.design.widget.NavigationView
         android:id="@+id/navigation_view"
