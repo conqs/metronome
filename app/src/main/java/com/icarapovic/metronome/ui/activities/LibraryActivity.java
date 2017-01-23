@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -16,6 +15,8 @@ import com.icarapovic.metronome.R;
 import com.icarapovic.metronome.ui.adapters.PagerAdapter;
 import com.icarapovic.metronome.ui.fragments.AlbumFragment;
 import com.icarapovic.metronome.ui.fragments.ArtistFragment;
+import com.icarapovic.metronome.ui.fragments.GenresFragment;
+import com.icarapovic.metronome.ui.fragments.PlaylistFragment;
 import com.icarapovic.metronome.ui.fragments.SongFragment;
 
 import java.util.List;
@@ -80,8 +81,8 @@ public class LibraryActivity extends AppCompatActivity implements EasyPermission
         adapter.addFragment(SongFragment.newInstance(), SongFragment.getTitle());
         adapter.addFragment(AlbumFragment.newInstance(), AlbumFragment.getTitle());
         adapter.addFragment(ArtistFragment.newInstance(), ArtistFragment.getTitle());
-        adapter.addFragment(new Fragment(), "Genres");
-        adapter.addFragment(new Fragment(), "Playlists");
+        adapter.addFragment(GenresFragment.newInstance(), GenresFragment.getTitle());
+        adapter.addFragment(PlaylistFragment.newInstance(), PlaylistFragment.getTitle());
         mViewPager.setAdapter(adapter);
     }
 
