@@ -15,6 +15,7 @@ import android.support.v7.widget.Toolbar;
 import com.icarapovic.metronome.R;
 import com.icarapovic.metronome.ui.adapters.PagerAdapter;
 import com.icarapovic.metronome.ui.fragments.AlbumFragment;
+import com.icarapovic.metronome.ui.fragments.ArtistFragment;
 import com.icarapovic.metronome.ui.fragments.SongFragment;
 
 import java.util.List;
@@ -78,7 +79,7 @@ public class LibraryActivity extends AppCompatActivity implements EasyPermission
         PagerAdapter adapter = new PagerAdapter(getSupportFragmentManager());
         adapter.addFragment(SongFragment.newInstance(), SongFragment.getTitle());
         adapter.addFragment(AlbumFragment.newInstance(), AlbumFragment.getTitle());
-        adapter.addFragment(new Fragment(), "Artists");
+        adapter.addFragment(ArtistFragment.newInstance(), ArtistFragment.getTitle());
         adapter.addFragment(new Fragment(), "Genres");
         adapter.addFragment(new Fragment(), "Playlists");
         mViewPager.setAdapter(adapter);
