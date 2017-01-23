@@ -46,6 +46,4 @@ public class SongFragment extends Fragment {
         // TODO extract
         return "Songs";
     }
-
-
 }
