@@ -20,7 +20,7 @@ public class SongFragment extends Fragment {
     public static final String TAG = "com.icarapovic.metronome.SONG_FRAGMENT";
 
     @BindView(R.id.recycler_song)
-    RecyclerView songRecycler;
+    RecyclerView mSongRecycler;
 
     public static SongFragment newInstance() {
         return new SongFragment();
@@ -38,8 +38,8 @@ public class SongFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         // create adapter and set it to the recycler view
         SongAdapter adapter = new SongAdapter(LocalMediaProvider.getInstance().fetchSongs(getContext()));
-        songRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
-        songRecycler.setAdapter(adapter);
+        mSongRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
+        mSongRecycler.setAdapter(adapter);
     }
 
     public static String getTitle() {

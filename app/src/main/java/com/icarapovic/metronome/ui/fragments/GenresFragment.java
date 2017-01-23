@@ -13,20 +13,20 @@ import com.icarapovic.metronome.R;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class AlbumFragment extends Fragment {
-    public static final String TAG = "com.icarapovic.metronome.ALBUM_FRAGMENT";
+public class GenresFragment extends Fragment {
+    public static final String TAG = "com.icarapovic.metronome.GENRE_FRAGMENT";
 
-    @BindView(R.id.recycler_album)
-    RecyclerView mAlbumRecycler;
+    @BindView(R.id.recycler_genres)
+    RecyclerView mGenresRecycler;
 
-    public static AlbumFragment newInstance() {
-        return new AlbumFragment();
+    public static GenresFragment newInstance() {
+        return new GenresFragment();
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_albums, container, false);
+        View v = inflater.inflate(R.layout.fragment_genres, container, false);
         ButterKnife.bind(this, v);
         return v;
     }
@@ -38,6 +38,6 @@ public class AlbumFragment extends Fragment {
 
     public static String getTitle() {
         // TODO extract
-        return "Album";
+        return "Genres";
     }
 }

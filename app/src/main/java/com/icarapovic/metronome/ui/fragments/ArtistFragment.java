@@ -17,7 +17,7 @@ public class ArtistFragment extends Fragment {
     public static final String TAG = "com.icarapovic.metronome.ARTIST_FRAGMENT";
 
     @BindView(R.id.recycler_artist)
-    RecyclerView artistRecycler;
+    RecyclerView mArtistRecycler;
 
     public static ArtistFragment newInstance() {
         return new ArtistFragment();
