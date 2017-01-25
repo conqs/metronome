@@ -56,9 +56,9 @@ public class LibraryActivity extends AppCompatActivity implements EasyPermission
         initTabBar();
 
         // if permission missing, ask for it
-        if(!EasyPermissions.hasPermissions(this, Manifest.permission.READ_EXTERNAL_STORAGE)){
+        if (!EasyPermissions.hasPermissions(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
             EasyPermissions.requestPermissions(this, getString(R.string.info_permissions_external_storage),
-                    REQUEST_CODE, Manifest.permission.READ_EXTERNAL_STORAGE);
+                    REQUEST_CODE, Manifest.permission.WRITE_EXTERNAL_STORAGE);
         } else {
             onContinue();
         }

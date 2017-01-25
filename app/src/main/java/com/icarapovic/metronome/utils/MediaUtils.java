@@ -1,5 +1,6 @@
 package com.icarapovic.metronome.utils;
 
+import android.content.ContentUris;
 import android.net.Uri;
 import android.widget.ImageView;
 
@@ -52,9 +53,24 @@ public class MediaUtils {
      * @param songId ID of the song
      * @param view The view to display album artwork
      */
-    public static void loadAlbumArt(int songId, ImageView view) {
+    public static void loadSongArt(int songId, ImageView view) {
         Uri artworkUri = Uri.parse("content://media/external/audio/media/" + songId + "/albumart");
         // TODO add placeholder in case no artwork provided
-        Glide.with(view.getContext()).load(artworkUri).into(view);
+        Glide.with(view.getContext())
+                .loadFromMediaStore(artworkUri)
+                .dontAnimate()
+                .into(view);
     }
+
+    public static void loadAlbumArt(int albumId, ImageView view) {
+        Uri sArtworkUri = Uri.parse("content://media/external/audio/albumart");
+        Uri uri = ContentUris.withAppendedId(sArtworkUri, albumId);
+        Glide.with(view.getContext())
+                .loadFromMediaStore(uri)
+                .sizeMultiplier(0.3f)
+                .dontAnimate()
+                .into(view);
+    }
+
 }
+

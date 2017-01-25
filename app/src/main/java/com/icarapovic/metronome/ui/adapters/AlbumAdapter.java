@@ -5,10 +5,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.icarapovic.metronome.R;
-import com.icarapovic.metronome.models.Song;
+import com.icarapovic.metronome.models.Album;
 import com.icarapovic.metronome.utils.MediaUtils;
 
 import java.util.List;
@@ -16,42 +15,37 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
+public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> {
 
-    private List<Song> mSongs;
+    private List<Album> mAlbums;
 
-    public SongAdapter(List<Song> songs){
-        mSongs = songs;
+    public AlbumAdapter(List<Album> albums) {
+        mAlbums = albums;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // inflate layout into a View and create a new ViewHolder
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_song, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_album, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         // fill ViewHolder with data
-        MediaUtils.loadSongArt(mSongs.get(position).getId(), holder.albumArt);
-        holder.songTitle.setText(mSongs.get(position).getTitle());
-        holder.songArtist.setText(mSongs.get(position).getArtistName());
+        MediaUtils.loadAlbumArt(mAlbums.get(position).getAlbumId(), holder.albumArt);
+        // TODO: Make album art ImageView square!
     }
 
     @Override
     public int getItemCount() {
         // size of the data set
-        return mSongs.size();
+        return mAlbums.size();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.album_art)
         ImageView albumArt;
-        @BindView(R.id.song_title)
-        TextView songTitle;
-        @BindView(R.id.song_artist)
-        TextView songArtist;
 
         public ViewHolder(View itemView) {
             super(itemView);
