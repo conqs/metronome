@@ -72,6 +72,5 @@ public class MediaUtils {
                 .sizeMultiplier(SIZE_MULTIPLIER)
                 .into(view);
     }
-
 }
 
