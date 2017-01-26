@@ -5,12 +5,14 @@ import android.net.Uri;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.icarapovic.metronome.R;
 
 public class MediaUtils {
 
     private MediaUtils(){}
 
     private static final String DELIMITER = ":";
+    private static final float SIZE_MULTIPLIER = 0.3f;
 
     /**
      * Get string representation of media duration
@@ -55,10 +57,9 @@ public class MediaUtils {
      */
     public static void loadSongArt(int songId, ImageView view) {
         Uri artworkUri = Uri.parse("content://media/external/audio/media/" + songId + "/albumart");
-        // TODO add placeholder in case no artwork provided
         Glide.with(view.getContext())
                 .loadFromMediaStore(artworkUri)
-                .dontAnimate()
+                .error(Themes.isDarkTheme() ? R.drawable.artwork_placeholder_light : R.drawable.artwork_placeholder_dark)
                 .into(view);
     }
 
@@ -67,8 +68,8 @@ public class MediaUtils {
         Uri uri = ContentUris.withAppendedId(sArtworkUri, albumId);
         Glide.with(view.getContext())
                 .loadFromMediaStore(uri)
-                .sizeMultiplier(0.3f)
-                .dontAnimate()
+                .error(Themes.isDarkTheme() ? R.drawable.artwork_placeholder_light : R.drawable.artwork_placeholder_dark)
+                .sizeMultiplier(SIZE_MULTIPLIER)
                 .into(view);
     }
 

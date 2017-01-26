@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.icarapovic.metronome.R;
 import com.icarapovic.metronome.models.Album;
@@ -34,7 +35,8 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
     public void onBindViewHolder(ViewHolder holder, int position) {
         // fill ViewHolder with data
         MediaUtils.loadAlbumArt(mAlbums.get(position).getAlbumId(), holder.albumArt);
-        // TODO: Make album art ImageView square!
+        holder.albumName.setText(mAlbums.get(position).getAlbumTitle());
+        holder.artistName.setText(mAlbums.get(position).getArtist());
     }
 
     @Override
@@ -46,6 +48,10 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
     class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.album_art)
         ImageView albumArt;
+        @BindView(R.id.artist_name)
+        TextView artistName;
+        @BindView(R.id.album_name)
+        TextView albumName;
 
         public ViewHolder(View itemView) {
             super(itemView);
