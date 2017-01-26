@@ -10,8 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.icarapovic.metronome.R;
+import com.icarapovic.metronome.adapters.AlbumAdapter;
 import com.icarapovic.metronome.provider.LocalMediaProvider;
-import com.icarapovic.metronome.ui.adapters.AlbumAdapter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

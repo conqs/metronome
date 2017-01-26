@@ -12,7 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import com.icarapovic.metronome.R;
-import com.icarapovic.metronome.ui.adapters.PagerAdapter;
+import com.icarapovic.metronome.adapters.PagerAdapter;
 import com.icarapovic.metronome.ui.fragments.AlbumFragment;
 import com.icarapovic.metronome.ui.fragments.ArtistFragment;
 import com.icarapovic.metronome.ui.fragments.GenresFragment;
