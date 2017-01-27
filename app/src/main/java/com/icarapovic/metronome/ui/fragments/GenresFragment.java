@@ -3,12 +3,15 @@ package com.icarapovic.metronome.ui.fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.icarapovic.metronome.R;
+import com.icarapovic.metronome.adapters.GenreAdapter;
+import com.icarapovic.metronome.provider.LocalMediaProvider;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -33,7 +36,9 @@ public class GenresFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-
+        GenreAdapter adapter = new GenreAdapter(LocalMediaProvider.getInstance().fetchGenres(getContext()));
+        mGenresRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
+        mGenresRecycler.setAdapter(adapter);
     }
 
     public static String getTitle() {
