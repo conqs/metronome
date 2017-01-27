@@ -424,7 +424,7 @@ public class LocalMediaProvider implements MediaProvider {
 
     private Cursor getPlaylistCursor(Context context) {
         return context.getContentResolver().query(
-                MediaStore.Audio.Genres.EXTERNAL_CONTENT_URI,
+                MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI,
                 Projections.PLAYLIST,
                 null,
                 null,

@@ -2,10 +2,6 @@ package com.icarapovic.metronome.provider;
 
 import android.provider.MediaStore;
 
-/**
- * Created by Ivan Carapovic on 23/03/16.
- * Contains all projections for fetching data from MediaStore
- */
 public interface Projections {
     String[] SONG = new String[]{
             MediaStore.Audio.Media._ID,

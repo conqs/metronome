@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.icarapovic.metronome.R;
-import com.icarapovic.metronome.models.Genre;
+import com.icarapovic.metronome.models.Playlist;
 import com.icarapovic.metronome.provider.LocalMediaProvider;
 
 import java.util.List;
@@ -15,43 +15,43 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class GenreAdapter extends RecyclerView.Adapter<GenreAdapter.ViewHolder> {
+public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHolder> {
 
-    private List<Genre> mGenres;
+    private List<Playlist> mPlaylists;
 
-    public GenreAdapter(List<Genre> Genres) {
-        mGenres = Genres;
+    public PlaylistAdapter(List<Playlist> playlists) {
+        mPlaylists = playlists;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // inflate layout into a View and create a new ViewHolder
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_genre, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_playlist, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Genre genre = mGenres.get(position);
-        holder.genreName.setText(genre.getGenreName());
+        Playlist playlist = mPlaylists.get(position);
+        holder.playlistName.setText(playlist.getName());
 
-        int genreSongCount = LocalMediaProvider.getInstance()
-                .fetchSongsFromGenre(holder.genreName.getContext(), genre.getGenreId())
+        int playlistSongCount = LocalMediaProvider.getInstance()
+                .fetchSongsFromPlaylist(holder.playlistName.getContext(), playlist.getId())
                 .size();
-        holder.genreSongCount.setText(genreSongCount + " songs");
+        holder.PlaylistSongCount.setText(playlistSongCount + " songs");
     }
 
     @Override
     public int getItemCount() {
         // size of the data set
-        return mGenres.size();
+        return mPlaylists.size();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.genre_name)
-        TextView genreName;
-        @BindView(R.id.genre_song_count)
-        TextView genreSongCount;
+        @BindView(R.id.playlist_name)
+        TextView playlistName;
+        @BindView(R.id.playlist_song_count)
+        TextView PlaylistSongCount;
 
         public ViewHolder(View itemView) {
             super(itemView);
