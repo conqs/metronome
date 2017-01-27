@@ -8,6 +8,7 @@ import android.provider.MediaStore;
 import com.icarapovic.metronome.models.Album;
 import com.icarapovic.metronome.models.Artist;
 import com.icarapovic.metronome.models.Genre;
+import com.icarapovic.metronome.models.Playlist;
 import com.icarapovic.metronome.models.Song;
 
 import java.util.ArrayList;
@@ -21,8 +22,10 @@ public class LocalMediaProvider implements MediaProvider {
     private List<Album> cachedAlbumList;
     private List<Artist> cachedArtistList;
     private List<Genre> cachedGenreList;
+    private List<Playlist> cachedPlaylists;
 
-    private LocalMediaProvider() {}
+    private LocalMediaProvider() {
+    }
 
     public static LocalMediaProvider getInstance() {
         if (INSTANCE != null) {
@@ -152,6 +155,35 @@ public class LocalMediaProvider implements MediaProvider {
     }
 
     @Override
+    public List<Playlist> fetchPlaylists(Context context) {
+        if (cachedPlaylists != null) {
+            return cachedPlaylists;
+        } else {
+            cachedPlaylists = new ArrayList<>();
+        }
+
+        Cursor c = getPlaylistCursor(context);
+
+        if (c != null) {
+            Playlist playlist;
+            while (c.moveToNext()) {
+                playlist = new Playlist.Builder()
+                        .setId(c.getInt(0))
+                        .setName(c.getString(1))
+                        .setUri(c.getString(2))
+                        .setDateAdded(c.getLong(3))
+                        .setDateModified(c.getLong(4))
+                        .build();
+
+                cachedPlaylists.add(playlist);
+            }
+            c.close();
+        }
+
+        return cachedPlaylists;
+    }
+
+    @Override
     public List<Song> fetchSongsFromAlbum(Context context, int albumId) {
         List<Song> songs = new ArrayList<>();
 
@@ -259,6 +291,43 @@ public class LocalMediaProvider implements MediaProvider {
     }
 
     @Override
+    public List<Song> fetchSongsFromPlaylist(Context context, int playlistId) {
+        List<Song> songs = new ArrayList<>();
+
+        Uri uri = MediaStore.Audio.Playlists.Members.getContentUri("external", playlistId);
+
+        Cursor cursor = context.getContentResolver().query(
+                uri,
+                Projections.SONG,
+                null,
+                null,
+                MediaStore.Audio.AudioColumns.TITLE + " ASC");
+
+        if (cursor != null) {
+            Song song;
+            while (cursor.moveToNext()) {
+                song = new Song.Builder()
+                        .setId(cursor.getInt(0))
+                        .setTitle(cursor.getString(1))
+                        .setAlbumId(cursor.getInt(2))
+                        .setAlbum(cursor.getString(3))
+                        .setArtistId(cursor.getInt(4))
+                        .setArtist(cursor.getString(5))
+                        .setDuration(cursor.getLong(6))
+                        .setPath(cursor.getString(7))
+                        .setDateAdded(cursor.getLong(8))
+                        .build();
+                songs.add(song);
+            }
+
+            cursor.close();
+        }
+
+        return songs;
+
+    }
+
+    @Override
     public List<Album> getAlbumsFromArtist(Context context, int artistId) {
         List<Album> albums = new ArrayList<>();
 
@@ -347,6 +416,16 @@ public class LocalMediaProvider implements MediaProvider {
         return context.getContentResolver().query(
                 MediaStore.Audio.Genres.EXTERNAL_CONTENT_URI,
                 Projections.GENRE,
+                null,
+                null,
+                MediaStore.Audio.GenresColumns.NAME + " ASC"
+        );
+    }
+
+    private Cursor getPlaylistCursor(Context context) {
+        return context.getContentResolver().query(
+                MediaStore.Audio.Genres.EXTERNAL_CONTENT_URI,
+                Projections.PLAYLIST,
                 null,
                 null,
                 MediaStore.Audio.GenresColumns.NAME + " ASC"
