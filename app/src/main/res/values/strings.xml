@@ -2,7 +2,12 @@
     <string name="app_name">Metronome</string>
     <string name="play">Play</string>
     <string name="pause">Pause</string>
-    <string name="info_permissions_external_storage">Without this permission we can\'t access folders media folders containing album artworks.</string>
     <string name="close_drawer">Close</string>
     <string name="open_drawer">Open</string>
+    <string name="permission_rationale_storage">We need storage permission to read your media library!</string>
+    <string name="permission_rationale_dialog_title">Permission required</string>
+    <string name="label_ok">OK</string>
+    <string name="label_cancel">Cancel</string>
+    <string name="permission_manual_settings">To continue using the app please enable STORAGE permission in Settings.</string>
+    <string name="label_exit">Exit app</string>
 </resources>

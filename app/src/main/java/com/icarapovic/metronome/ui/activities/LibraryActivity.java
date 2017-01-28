@@ -1,13 +1,21 @@
 package com.icarapovic.metronome.ui.activities;
 
-import android.Manifest;
+import android.annotation.TargetApi;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -19,15 +27,15 @@ import com.icarapovic.metronome.ui.fragments.GenresFragment;
 import com.icarapovic.metronome.ui.fragments.PlaylistFragment;
 import com.icarapovic.metronome.ui.fragments.SongFragment;
 
-import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import pub.devrel.easypermissions.EasyPermissions;
 
-public class LibraryActivity extends AppCompatActivity implements EasyPermissions.PermissionCallbacks {
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
-    private static final int REQUEST_CODE = 100;
+public class LibraryActivity extends AppCompatActivity {
+
+    private static final int REQUEST_CODE_PERMISSION_STORAGE = 100;
+    private static final int REQUEST_CODE_APP_SETTINGS = 1;
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -49,23 +57,36 @@ public class LibraryActivity extends AppCompatActivity implements EasyPermission
 
         // activate BindView annotations
         ButterKnife.bind(this);
-
         setSupportActionBar(mToolbar);
         initNavigationDrawer();
-        initViewPager();
-        initTabBar();
 
-        // if permission missing, ask for it
-        if (!EasyPermissions.hasPermissions(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            EasyPermissions.requestPermissions(this, getString(R.string.info_permissions_external_storage),
-                    REQUEST_CODE, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            checkPermissions();
         } else {
-            onContinue();
+            initViewPagerWithTabs();
+        }
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                initViewPagerWithTabs();
+            }
         }
     }
 
-    private void initTabBar() {
-        mTabLayout.setupWithViewPager(mViewPager);
+    @TargetApi(Build.VERSION_CODES.M)
+    private void checkPermissions() {
+        int storageAccess = checkSelfPermission(WRITE_EXTERNAL_STORAGE);
+
+        if (storageAccess == PackageManager.PERMISSION_DENIED) {
+            requestPermissions(new String[]{WRITE_EXTERNAL_STORAGE}, REQUEST_CODE_PERMISSION_STORAGE);
+        } else {
+            initViewPagerWithTabs();
+        }
     }
 
     private void initNavigationDrawer() {
@@ -76,7 +97,7 @@ public class LibraryActivity extends AppCompatActivity implements EasyPermission
         mToggle.syncState();
     }
 
-    private void initViewPager() {
+    private void initViewPagerWithTabs() {
         PagerAdapter adapter = new PagerAdapter(getSupportFragmentManager());
         adapter.addFragment(SongFragment.newInstance(), SongFragment.getTitle());
         adapter.addFragment(AlbumFragment.newInstance(), AlbumFragment.getTitle());
@@ -84,28 +105,70 @@ public class LibraryActivity extends AppCompatActivity implements EasyPermission
         adapter.addFragment(GenresFragment.newInstance(), GenresFragment.getTitle());
         adapter.addFragment(PlaylistFragment.newInstance(), PlaylistFragment.getTitle());
         mViewPager.setAdapter(adapter);
+        mTabLayout.setupWithViewPager(mViewPager);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        // auto handle permission result
-        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == REQUEST_CODE_PERMISSION_STORAGE) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                initViewPagerWithTabs();
+            } else if (shouldShowRequestPermissionRationale(WRITE_EXTERNAL_STORAGE)) {
+                new AlertDialog.Builder(this)
+                        .setPositiveButton(R.string.label_ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                requestPermissions(new String[]{WRITE_EXTERNAL_STORAGE}, REQUEST_CODE_PERMISSION_STORAGE);
+                            }
+                        }).setMessage(R.string.permission_rationale_storage)
+                        .setCancelable(false)
+                        .setTitle(R.string.permission_rationale_dialog_title)
+                        .create()
+                        .show();
+            } else {
+                final Intent i = new Intent();
+                i.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                i.setData(Uri.parse("package:" + getPackageName()));
+
+                new AlertDialog.Builder(this)
+                        .setPositiveButton(R.string.label_ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                startActivityForResult(i, REQUEST_CODE_APP_SETTINGS);
+                            }
+                        })
+                        .setNegativeButton(R.string.label_exit, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                finishAndRemoveTask();
+                            }
+                        })
+                        .setMessage(R.string.permission_manual_settings)
+                        .setCancelable(false)
+                        .setTitle(R.string.permission_rationale_dialog_title)
+                        .create()
+                        .show();
+            }
+        }
     }
 
     @Override
-    public void onPermissionsGranted(int requestCode, List<String> perms) {
-        onContinue();
-    }
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
-    @Override
-    public void onPermissionsDenied(int requestCode, List<String> perms) {
-        // without permission to read storage this app is useless (for now)
-        finishAndRemoveTask();
-    }
-
-    // continue after permission check, method is NOT from activity lifecycle
-    private void onContinue(){
-
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && requestCode == REQUEST_CODE_APP_SETTINGS) {
+            if (checkSelfPermission(WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                initViewPagerWithTabs();
+            } else {
+                finishAndRemoveTask();
+            }
+        }
     }
 }
+
