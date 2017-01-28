@@ -1,5 +1,6 @@
 package com.icarapovic.metronome.adapters;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,12 +34,13 @@ public class GenreAdapter extends RecyclerView.Adapter<GenreAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Genre genre = mGenres.get(position);
+        Context context = holder.genreName.getContext();
         holder.genreName.setText(genre.getGenreName());
 
         int genreSongCount = LocalMediaProvider.getInstance()
-                .fetchSongsFromGenre(holder.genreName.getContext(), genre.getGenreId())
+                .fetchSongsFromGenre(context, genre.getGenreId())
                 .size();
-        holder.genreSongCount.setText(genreSongCount + " songs");
+        holder.genreSongCount.setText(context.getString(R.string.label_song_count, genreSongCount));
     }
 
     @Override

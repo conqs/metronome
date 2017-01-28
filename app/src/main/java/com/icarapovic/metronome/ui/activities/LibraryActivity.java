@@ -90,7 +90,7 @@ public class LibraryActivity extends AppCompatActivity {
     }
 
     private void initNavigationDrawer() {
-        mToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.open_drawer, R.string.close_drawer);
+        mToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.label_open_drawer, R.string.label_close_drawer);
         mDrawerLayout.addDrawerListener(mToggle);
 
         // sync toggle with navigation drawer, showing arrow or hamburger menu

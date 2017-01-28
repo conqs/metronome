@@ -1,5 +1,6 @@
 package com.icarapovic.metronome.adapters;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +18,6 @@ import butterknife.ButterKnife;
 public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder> {
 
     private List<Artist> mArtists;
-    private StringBuilder sb = new StringBuilder();
 
     public ArtistAdapter(List<Artist> artists) {
         mArtists = artists;
@@ -32,17 +32,13 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Artist artist = mArtists.get(position);
-        sb.replace(0, sb.length(), "");
+        Context context = holder.artistMetadata.getContext();
 
-        // format "X albums  |  X songs"
-        sb.append(artist.getNumberOfAlbums())
-                .append(" albums  |  ")
-                .append(artist.getNumberOfSongs())
-                .append(" songs");
+        Artist artist = mArtists.get(position);
 
         holder.artistName.setText(artist.getArtistName());
-        holder.artistMetadata.setText(sb.toString());
+        holder.artistMetadata.setText(context.getString(
+                R.string.label_album_song_count, artist.getNumberOfAlbums(), artist.getNumberOfSongs()));
     }
 
     @Override

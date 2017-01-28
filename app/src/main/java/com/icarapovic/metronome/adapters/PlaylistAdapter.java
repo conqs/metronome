@@ -1,5 +1,6 @@
 package com.icarapovic.metronome.adapters;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,13 +33,15 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+        Context context = holder.playlistName.getContext();
+
         Playlist playlist = mPlaylists.get(position);
         holder.playlistName.setText(playlist.getName());
 
         int playlistSongCount = LocalMediaProvider.getInstance()
-                .fetchSongsFromPlaylist(holder.playlistName.getContext(), playlist.getId())
+                .fetchSongsFromPlaylist(context, playlist.getId())
                 .size();
-        holder.PlaylistSongCount.setText(playlistSongCount + " songs");
+        holder.PlaylistSongCount.setText(context.getString(R.string.label_song_count, playlistSongCount));
     }
 
     @Override
