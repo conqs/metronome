@@ -11,6 +11,7 @@
         android:id="@+id/album_art"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:scaleType="fitXY"
         tools:background="@color/md_blue_grey_500"/>
 
     <TextView

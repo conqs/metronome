@@ -13,6 +13,7 @@
         android:layout_height="48dp"
         android:layout_centerVertical="true"
         android:layout_marginStart="@dimen/spacing_medium"
+        android:scaleType="fitXY"
         tools:background="@color/md_white_1000"/>
 
     <LinearLayout

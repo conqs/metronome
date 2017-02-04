@@ -59,7 +59,7 @@ public class MediaUtils {
         Uri artworkUri = Uri.parse("content://media/external/audio/media/" + songId + "/albumart");
         Glide.with(view.getContext())
                 .loadFromMediaStore(artworkUri)
-                .error(Themes.isDarkTheme() ? R.drawable.artwork_placeholder_light : R.drawable.artwork_placeholder_dark)
+                .error(R.drawable.ic_album)
                 .into(view);
     }
 
@@ -68,7 +68,7 @@ public class MediaUtils {
         Uri uri = ContentUris.withAppendedId(sArtworkUri, albumId);
         Glide.with(view.getContext())
                 .loadFromMediaStore(uri)
-                .error(Themes.isDarkTheme() ? R.drawable.artwork_placeholder_light : R.drawable.artwork_placeholder_dark)
+                .error(R.drawable.ic_album)
                 .sizeMultiplier(SIZE_MULTIPLIER)
                 .into(view);
     }
