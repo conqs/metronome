@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/background"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/toolbar_height"
+        tools:background="@color/md_blue_600"/>
+
+    <com.icarapovic.metronome.ui.views.AlbumArtView
+        android:id="@+id/album_art"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/toolbar"
+        tools:background="@color/md_amber_900"/>
+
+    <LinearLayout
+        android:id="@+id/control_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/seeker"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/repeat"
+            android:src="@drawable/ic_repeat"
+            style="@style/MediaControl"/>
+
+        <ImageView
+            android:id="@+id/previous"
+            android:src="@drawable/ic_previous"
+            style="@style/MediaControl"/>
+
+        <ImageView
+            android:id="@+id/play_pause"
+            android:src="@drawable/ic_play"
+            style="@style/MediaControl"/>
+
+        <ImageView
+            android:id="@+id/next"
+            android:src="@drawable/ic_next"
+            style="@style/MediaControl"/>
+
+        <ImageView
+            android:id="@+id/shuffle"
+            android:src="@drawable/ic_shuffle_on"
+            style="@style/MediaControl"/>
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/toggle_queue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_up"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:padding="@dimen/spacing_small"/>
+
+    <SeekBar
+        android:id="@+id/seeker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/spacing_small"
+        android:paddingBottom="@dimen/spacing_small"
+        android:layout_below="@id/album_art"/>
+
+</RelativeLayout>
