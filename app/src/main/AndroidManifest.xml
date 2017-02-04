@@ -29,6 +29,8 @@
             </intent-filter>
         </service>
 
+        <activity android:name=".ui.activities.NowPlayingActivity">
+        </activity>
     </application>
 
 </manifest>

@@ -1,5 +1,7 @@
 package com.icarapovic.metronome.adapters;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,12 +11,15 @@ import android.widget.TextView;
 
 import com.icarapovic.metronome.R;
 import com.icarapovic.metronome.models.Song;
+import com.icarapovic.metronome.ui.activities.NowPlayingActivity;
 import com.icarapovic.metronome.utils.MediaUtils;
+import com.icarapovic.metronome.utils.SourceType;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
 
@@ -37,6 +42,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
         MediaUtils.loadSongArt(mSongs.get(position).getId(), holder.albumArt);
         holder.songTitle.setText(mSongs.get(position).getTitle());
         holder.songArtist.setText(mSongs.get(position).getArtistName());
+        holder.mSong = mSongs.get(position);
     }
 
     @Override
@@ -53,9 +59,21 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
         @BindView(R.id.song_artist)
         TextView songArtist;
 
+        Song mSong;
+        Context mContext;
+
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            mContext = itemView.getContext();
+        }
+
+        @OnClick(R.id.layout)
+        public void play() {
+            Intent i = new Intent(mContext, NowPlayingActivity.class);
+            i.putExtra("_extra_song_id", mSong.getId());
+            i.putExtra("_extra_source_type", SourceType.SONG);
+            mContext.startActivity(i);
         }
     }
 }
