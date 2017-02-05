@@ -39,7 +39,8 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         // fill ViewHolder with data
-        MediaUtils.loadSongArt(mSongs.get(position).getId(), holder.albumArt);
+        float artworkQuality = 1.0f;
+        MediaUtils.loadSongArt(mSongs.get(position).getId(), holder.albumArt, artworkQuality);
         holder.songTitle.setText(mSongs.get(position).getTitle());
         holder.songArtist.setText(mSongs.get(position).getArtistName());
         holder.mSong = mSongs.get(position);
@@ -72,7 +73,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
         public void play() {
             Intent i = new Intent(mContext, NowPlayingActivity.class);
             i.putExtra("_extra_song_id", mSong.getId());
-            i.putExtra("_extra_source_type", SourceType.SONG);
+            i.putExtra(NowPlayingActivity.EXTRA_SOURCE_TYPE, SourceType.SONG);
             mContext.startActivity(i);
         }
     }

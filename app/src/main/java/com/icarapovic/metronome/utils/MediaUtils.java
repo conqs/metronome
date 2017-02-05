@@ -12,7 +12,6 @@ public class MediaUtils {
     private MediaUtils(){}
 
     private static final String DELIMITER = ":";
-    private static final float SIZE_MULTIPLIER = 0.3f;
 
     /**
      * Get string representation of media duration
@@ -55,21 +54,22 @@ public class MediaUtils {
      * @param songId ID of the song
      * @param view The view to display album artwork
      */
-    public static void loadSongArt(int songId, ImageView view) {
+    public static void loadSongArt(int songId, ImageView view, float quality) {
         Uri artworkUri = Uri.parse("content://media/external/audio/media/" + songId + "/albumart");
         Glide.with(view.getContext())
                 .loadFromMediaStore(artworkUri)
                 .error(R.drawable.ic_album)
+                .sizeMultiplier(quality)
                 .into(view);
     }
 
-    public static void loadAlbumArt(int albumId, ImageView view) {
+    public static void loadAlbumArt(int albumId, ImageView view, float quality) {
         Uri sArtworkUri = Uri.parse("content://media/external/audio/albumart");
         Uri uri = ContentUris.withAppendedId(sArtworkUri, albumId);
         Glide.with(view.getContext())
                 .loadFromMediaStore(uri)
                 .error(R.drawable.ic_album)
-                .sizeMultiplier(SIZE_MULTIPLIER)
+                .sizeMultiplier(quality)
                 .into(view);
     }
 }
