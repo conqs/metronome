@@ -18,6 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/toolbar"
+        android:transitionName="artwork"
         tools:background="@color/md_amber_900"/>
 
     <LinearLayout

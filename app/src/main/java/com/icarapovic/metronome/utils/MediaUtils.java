@@ -58,8 +58,10 @@ public class MediaUtils {
         Uri artworkUri = Uri.parse("content://media/external/audio/media/" + songId + "/albumart");
         Glide.with(view.getContext())
                 .loadFromMediaStore(artworkUri)
+                .placeholder(R.drawable.ic_album)
                 .error(R.drawable.ic_album)
                 .sizeMultiplier(quality)
+                .dontAnimate()
                 .into(view);
     }
 

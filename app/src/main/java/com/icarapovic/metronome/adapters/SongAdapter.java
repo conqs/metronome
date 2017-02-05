@@ -2,6 +2,7 @@ package com.icarapovic.metronome.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 
 import com.icarapovic.metronome.R;
 import com.icarapovic.metronome.models.Song;
+import com.icarapovic.metronome.ui.activities.LibraryActivity;
 import com.icarapovic.metronome.ui.activities.NowPlayingActivity;
 import com.icarapovic.metronome.utils.MediaUtils;
 import com.icarapovic.metronome.utils.SourceType;
@@ -72,9 +74,13 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
         @OnClick(R.id.layout)
         public void play() {
             Intent i = new Intent(mContext, NowPlayingActivity.class);
+
+            ActivityOptionsCompat options = ActivityOptionsCompat.
+                    makeSceneTransitionAnimation((LibraryActivity) mContext, albumArt, "artwork");
+
             i.putExtra(NowPlayingActivity.EXTRA_MEDIA_ID, mSong.getId());
             i.putExtra(NowPlayingActivity.EXTRA_SOURCE_TYPE, SourceType.SONG);
-            mContext.startActivity(i);
+            mContext.startActivity(i, options.toBundle());
         }
     }
 }
