@@ -72,7 +72,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
         @OnClick(R.id.layout)
         public void play() {
             Intent i = new Intent(mContext, NowPlayingActivity.class);
-            i.putExtra("_extra_song_id", mSong.getId());
+            i.putExtra(NowPlayingActivity.EXTRA_MEDIA_ID, mSong.getId());
             i.putExtra(NowPlayingActivity.EXTRA_SOURCE_TYPE, SourceType.SONG);
             mContext.startActivity(i);
         }
