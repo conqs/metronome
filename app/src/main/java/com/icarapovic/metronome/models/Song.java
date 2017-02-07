@@ -1,8 +1,11 @@
 package com.icarapovic.metronome.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.icarapovic.metronome.utils.MediaUtils;
 
-public class Song {
+public class Song implements Parcelable {
 
     private Song(
             int id,
@@ -38,6 +41,50 @@ public class Song {
     private final String mPath;
     private final long mFileSize;
     private final long mDateAdded;
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    private Song(Parcel in) {
+        mId = in.readInt();
+        mTitle = in.readString();
+        mAlbumId = in.readInt();
+        mAlbum = in.readString();
+        mArtistId = in.readInt();
+        mArtist = in.readString();
+        mDuration = in.readLong();
+        mPath = in.readString();
+        mFileSize = in.readLong();
+        mDateAdded = in.readLong();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(mId);
+        dest.writeString(mTitle);
+        dest.writeInt(mAlbumId);
+        dest.writeString(mAlbum);
+        dest.writeInt(mArtistId);
+        dest.writeString(mArtist);
+        dest.writeLong(mDuration);
+        dest.writeString(mPath);
+        dest.writeLong(mFileSize);
+        dest.writeLong(mDateAdded);
+    }
+
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        @Override
+        public Song createFromParcel(Parcel source) {
+            return new Song(source);
+        }
+
+        @Override
+        public Song[] newArray(int size) {
+            return new Song[size];
+        }
+    };
 
     public static class Builder {
         private int mId;
