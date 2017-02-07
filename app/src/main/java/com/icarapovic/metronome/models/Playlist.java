@@ -1,6 +1,9 @@
 package com.icarapovic.metronome.models;
 
-public class Playlist {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Playlist implements Parcelable {
 
     private final int mId;
     private final String mName;
@@ -15,6 +18,26 @@ public class Playlist {
         this.mDateAdded = created;
         this.mDateModified = modified;
     }
+
+    protected Playlist(Parcel in) {
+        mId = in.readInt();
+        mName = in.readString();
+        mUri = in.readString();
+        mDateAdded = in.readLong();
+        mDateModified = in.readLong();
+    }
+
+    public static final Creator<Playlist> CREATOR = new Creator<Playlist>() {
+        @Override
+        public Playlist createFromParcel(Parcel in) {
+            return new Playlist(in);
+        }
+
+        @Override
+        public Playlist[] newArray(int size) {
+            return new Playlist[size];
+        }
+    };
 
     public int getId() {
         return mId;
@@ -34,6 +57,20 @@ public class Playlist {
 
     public long getDateModified() {
         return mDateModified;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(mId);
+        dest.writeString(mName);
+        dest.writeString(mUri);
+        dest.writeLong(mDateAdded);
+        dest.writeLong(mDateModified);
     }
 
     public static class Builder {
