@@ -1,6 +1,9 @@
 package com.icarapovic.metronome.models;
 
-public class Album {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Album implements Parcelable {
 
     private Album(int albumId, String albumTitle, String artist, int numberOfSongs, String albumArt) {
         mAlbumId = albumId;
@@ -15,6 +18,40 @@ public class Album {
     private final String mArtist;
     private final int mNumberOfSongs;
     private final String mAlbumArt;
+
+    protected Album(Parcel in) {
+        mAlbumId = in.readInt();
+        mAlbumTitle = in.readString();
+        mArtist = in.readString();
+        mNumberOfSongs = in.readInt();
+        mAlbumArt = in.readString();
+    }
+
+    public static final Creator<Album> CREATOR = new Creator<Album>() {
+        @Override
+        public Album createFromParcel(Parcel in) {
+            return new Album(in);
+        }
+
+        @Override
+        public Album[] newArray(int size) {
+            return new Album[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(mAlbumId);
+        dest.writeString(mAlbumTitle);
+        dest.writeString(mArtist);
+        dest.writeInt(mNumberOfSongs);
+        dest.writeString(mAlbumArt);
+    }
 
     public static class Builder {
         private int mAlbumId;
