@@ -6,17 +6,22 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 
 import com.icarapovic.metronome.R;
+import com.icarapovic.metronome.models.Song;
+import com.icarapovic.metronome.service.MediaService;
+import com.icarapovic.metronome.utils.Command;
 import com.icarapovic.metronome.utils.MediaUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class NowPlayingActivity extends AppCompatActivity {
-    public static final String EXTRA_SOURCE_TYPE = "_extra_source_type";
-    public static final String EXTRA_MEDIA_ID = "_extra_song_id";
 
     @BindView(R.id.album_art)
     ImageView mAlbumArt;
+
+    private Intent mCommand;
+    private Song mCurrentSong;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,8 +29,16 @@ public class NowPlayingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_now_playing);
         ButterKnife.bind(this);
 
+        mCommand = new Intent(this, MediaService.class);
         Intent i = getIntent();
-        int mediaId = i.getIntExtra(EXTRA_MEDIA_ID, 0);
-        MediaUtils.loadSongArt(mediaId, mAlbumArt, 1f);
+        mCurrentSong = i.getParcelableExtra(MediaService.EXTRA_TRACK);
+        MediaUtils.loadSongArt(mCurrentSong.getId(), mAlbumArt, 1f);
     }
+
+    @OnClick(R.id.play_pause)
+    public void playPause() {
+        mCommand.putExtra(MediaService.COMMAND, Command.PLAY_PAUSE);
+        startService(mCommand);
+    }
+
 }

@@ -12,27 +12,42 @@ import android.os.PowerManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationManagerCompat;
 
+import com.icarapovic.metronome.models.Song;
+import com.icarapovic.metronome.utils.Command;
+
+import java.io.IOException;
+import java.util.List;
+
 public class MediaService extends Service implements
         AudioManager.OnAudioFocusChangeListener,
-        MediaPlayer.OnCompletionListener {
+        MediaPlayer.OnCompletionListener,
+        MediaPlayer.OnPreparedListener {
 
     private static final int NOTIFICATION_ID = 2905992;
     private static final float VOLUME_MAX = 1.0f;
     private static final float VOLUME_DUCKED = 0.3f;
     private static final String TAG = "MediaService";
+    public static final String COMMAND = "com.icarapovic.action.MEDIA_SERVICE_COMMAND";
+    public static final String EXTRA_TRACK = "com.icarapovic.data.DATA";
+    public static final String EXTRA_TRACK_LIST = "com.icarapovic.data.DATA_LIST";
 
     private MediaPlayer mMediaPlayer;
     private BroadcastReceiver mHeadphonesReceiver;
+    private int mQueuePosition = -1;
+    private List<Song> mQueue;
+    private AudioManager mAudioManager;
 
     @Override
     public void onCreate() {
         super.onCreate();
 
-        initMediaPlayer();
+        mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+
+        setupMediaPlayer();
         initNoisyReceiver();
     }
 
-    private void initMediaPlayer() {
+    private void setupMediaPlayer() {
         mMediaPlayer = new MediaPlayer();
 
         // prevent CPU to go into deep sleep to allow music playback while screen is off
@@ -40,6 +55,13 @@ public class MediaService extends Service implements
 
         mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         mMediaPlayer.setVolume(VOLUME_MAX, VOLUME_MAX);
+        mMediaPlayer.setOnCompletionListener(this);
+        mMediaPlayer.setOnPreparedListener(this);
+
+        // don't even start the service if we can't get audio focus
+        if (!requestAudioFocus()) {
+            stopSelf();
+        }
     }
 
     private void initNoisyReceiver() {
@@ -61,7 +83,72 @@ public class MediaService extends Service implements
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         // Intent is sent which has an Action (Intent.getAction()) according to which some command is to be executed
-        return super.onStartCommand(intent, flags, startId);
+        int command = intent.getIntExtra(COMMAND, -1);
+        if (command == -1) {
+            throw new IllegalArgumentException("Service command invalid!");
+        }
+
+        handleCommand(intent);
+
+        return START_STICKY;
+    }
+
+    private void handleCommand(Intent intent) {
+        Song song = intent.getParcelableExtra(EXTRA_TRACK);
+        List<Song> queue = intent.getParcelableArrayListExtra(EXTRA_TRACK_LIST);
+
+        switch (intent.getIntExtra(COMMAND, -1)) {
+            case Command.PLAY_PAUSE:
+                try {
+                    if (mMediaPlayer.isPlaying()) {
+                        mMediaPlayer.pause();
+                        mAudioManager.abandonAudioFocus(this);
+                    } else {
+                        if (requestAudioFocus()) {
+                            mMediaPlayer.start();
+                        }
+                    }
+                } catch (IllegalStateException ex) {
+                    initMediaPlayer(song, queue);
+                }
+                break;
+            case Command.NEXT:
+                break;
+            case Command.PREVIOUS:
+                break;
+            case Command.REPEAT:
+                break;
+            case Command.SHUFFLE:
+                break;
+            case Command.FAVORITE:
+                break;
+            case Command.ENQUEUE:
+                break;
+            case Command.INIT:
+                initMediaPlayer(song, queue);
+                break;
+            default:
+                // invalid call, ideally this should never occur
+                stopSelf();
+        }
+    }
+
+    private void initMediaPlayer(Song song, List<Song> queue) {
+        if (song != null) {
+            mMediaPlayer.reset();
+            try {
+                mMediaPlayer.setDataSource(song.getPath());
+                mMediaPlayer.prepare();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            if (queue != null) {
+                mQueue = queue;
+            }
+        } else {
+            throw new IllegalArgumentException("song = null, mediaPlayer not initialized!");
+        }
     }
 
     @Override
@@ -99,16 +186,19 @@ public class MediaService extends Service implements
         }
     }
 
-    private boolean hasAudioFocus() {
-        AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-        int result = audioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
-
+    private boolean requestAudioFocus() {
+        int result = mAudioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
         return result == AudioManager.AUDIOFOCUS_GAIN;
     }
 
     @Override
     public void onCompletion(MediaPlayer mp) {
         // TODO
+    }
+
+    @Override
+    public void onPrepared(MediaPlayer mp) {
+        mp.start();
     }
 
     @Override
