@@ -14,17 +14,16 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationManagerCompat;
 
 import com.icarapovic.metronome.models.Song;
+import com.icarapovic.metronome.provider.MediaController;
 
 import java.util.List;
 
 public class MediaService extends Service implements
         AudioManager.OnAudioFocusChangeListener,
         MediaPlayer.OnCompletionListener,
-        MediaPlayer.OnPreparedListener {
+        MediaPlayer.OnPreparedListener,
+        MediaController {
 
-    public static final String COMMAND = "com.icarapovic.action.MEDIA_SERVICE_COMMAND";
-    public static final String EXTRA_TRACK = "com.icarapovic.data.DATA";
-    public static final String EXTRA_TRACK_LIST = "com.icarapovic.data.DATA_LIST";
     private static final int NOTIFICATION_ID = 2905992;
     private static final float VOLUME_MAX = 1.0f;
     private static final float VOLUME_DUCKED = 0.3f;
@@ -149,8 +148,60 @@ public class MediaService extends Service implements
         return localBinder;
     }
 
+    @Override
+    public boolean isPlaying() {
+        try {
+            return mediaPlayer.isPlaying();
+        } catch (NullPointerException | IllegalStateException ex) {
+            // if mediaPlayer is null, or in an invalid state, its definitely not playing
+            return false;
+        }
+    }
+
+    @Override
+    public boolean isShuffling() {
+        // TODO SharedPrefs
+        return false;
+    }
+
+    @Override
+    public int getRepeatMode() {
+        // TODO SharedPrefs
+        return REPEAT_OFF;
+    }
+
+    @Override
+    public void play() {
+        // TODO
+    }
+
+    @Override
+    public void pause() {
+        // TODO
+    }
+
+    @Override
+    public void next() {
+        // TODO
+    }
+
+    @Override
+    public void previous() {
+        // TODO
+    }
+
+    @Override
+    public void toggleShuffle() {
+        // TODO
+    }
+
+    @Override
+    public void toggleRepeat() {
+        // TODO
+    }
+
     public class LocalBinder extends Binder {
-        MediaService getService() {
+        public MediaController getService() {
             return MediaService.this;
         }
     }
