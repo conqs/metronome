@@ -1,8 +1,6 @@
 package com.icarapovic.metronome.adapters;
 
 import android.content.Context;
-import android.content.Intent;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,10 +10,6 @@ import android.widget.TextView;
 
 import com.icarapovic.metronome.R;
 import com.icarapovic.metronome.models.Song;
-import com.icarapovic.metronome.service.MediaService;
-import com.icarapovic.metronome.ui.activities.LibraryActivity;
-import com.icarapovic.metronome.ui.activities.NowPlayingActivity;
-import com.icarapovic.metronome.utils.Command;
 import com.icarapovic.metronome.utils.MediaUtils;
 
 import java.util.List;
@@ -74,24 +68,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
 
         @OnClick(R.id.layout)
         public void play() {
-            Intent i = new Intent(mContext, NowPlayingActivity.class);
 
-            ActivityOptionsCompat options = ActivityOptionsCompat.
-                    makeSceneTransitionAnimation((LibraryActivity) mContext, albumArt, "artwork");
-
-            // start Now Playing activity
-            i.putExtra(MediaService.EXTRA_TRACK, mSong);
-            mContext.startActivity(i, options.toBundle());
-
-            // start playback from background service
-            startPlaybackService();
-        }
-
-        private void startPlaybackService() {
-            Intent mCommand = new Intent(mContext, MediaService.class);
-            mCommand.putExtra(MediaService.COMMAND, Command.INIT);
-            mCommand.putExtra(MediaService.EXTRA_TRACK, mSong);
-            mContext.startService(mCommand);
         }
     }
 }
