@@ -9,11 +9,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 
 import com.icarapovic.metronome.R;
-import com.icarapovic.metronome.models.Song;
 import com.icarapovic.metronome.provider.MediaController;
 import com.icarapovic.metronome.service.MediaService;
-
-import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -30,22 +27,9 @@ public class NowPlayingActivity extends AppCompatActivity {
     @BindView(R.id.repeat)
     ImageView repeat;
 
-    MediaController mediaController;
-    boolean isBound = false;
-    ServiceConnection connection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            mediaController = ((MediaService.LocalBinder) service).getService();
-            isBound = true;
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            mediaController = null;
-            isBound = false;
-        }
-    };
-    private ArrayList<Song> mQueue;
+    private MediaController mediaController;
+    private boolean isBound = true;
+    private ServiceConnection connection;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,18 +37,30 @@ public class NowPlayingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_now_playing);
         ButterKnife.bind(this);
 
+        initConnection();
         bindService(new Intent(this, MediaService.class), connection, BIND_AUTO_CREATE);
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        syncState();
+    private void initConnection() {
+        connection = new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder service) {
+                mediaController = ((MediaService.LocalBinder) service).getService();
+                isBound = true;
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+                mediaController = null;
+                isBound = false;
+            }
+        };
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        syncState();
         // TODO check if service bound, handle worst case
     }
 
@@ -74,8 +70,19 @@ public class NowPlayingActivity extends AppCompatActivity {
     private void syncState() {
         if (isBound) {
             playPause.setImageResource(mediaController.isPlaying() ? R.drawable.ic_pause : R.drawable.ic_play);
-            shuffle.setImageResource(mediaController.isShuffling() ? R.drawable.ic_shuffle_on : R.drawable.ic_shuffle_off);
             syncRepeatIcon();
+            syncShuffleIcon();
+        }
+    }
+
+    private void syncShuffleIcon() {
+        switch (mediaController.getShuffleMode()) {
+            case MediaController.SHUFFLE_OFF:
+                shuffle.setImageResource(R.drawable.ic_shuffle_off);
+                break;
+            case MediaController.SHUFFLE_ON:
+                shuffle.setImageResource(R.drawable.ic_shuffle_on);
+                break;
         }
     }
 
@@ -126,6 +133,6 @@ public class NowPlayingActivity extends AppCompatActivity {
     @OnClick(R.id.shuffle)
     public void shuffle() {
         mediaController.toggleShuffle();
-        syncState();
+        syncShuffleIcon();
     }
 }

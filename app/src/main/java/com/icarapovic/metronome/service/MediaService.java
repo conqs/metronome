@@ -15,6 +15,7 @@ import android.support.v4.app.NotificationManagerCompat;
 
 import com.icarapovic.metronome.models.Song;
 import com.icarapovic.metronome.provider.MediaController;
+import com.icarapovic.metronome.utils.Settings;
 
 import java.util.List;
 
@@ -159,15 +160,13 @@ public class MediaService extends Service implements
     }
 
     @Override
-    public boolean isShuffling() {
-        // TODO SharedPrefs
-        return false;
+    public int getShuffleMode() {
+        return Settings.getShuffleMode(this);
     }
 
     @Override
     public int getRepeatMode() {
-        // TODO SharedPrefs
-        return REPEAT_OFF;
+        return Settings.getRepeatMode(this);
     }
 
     @Override
@@ -192,12 +191,12 @@ public class MediaService extends Service implements
 
     @Override
     public void toggleShuffle() {
-        // TODO
+        Settings.toggleShuffleMode(this);
     }
 
     @Override
     public void toggleRepeat() {
-        // TODO
+        Settings.toggleRepeatMode(this);
     }
 
     public class LocalBinder extends Binder {

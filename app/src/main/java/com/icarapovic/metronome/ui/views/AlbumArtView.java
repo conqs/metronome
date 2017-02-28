@@ -17,6 +17,7 @@ public class AlbumArtView extends ImageView {
     public AlbumArtView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr, 0);
         setScaleType(ScaleType.FIT_XY);
+        // TODO implement setting a placeholder via code and XML
     }
 
     @Override
