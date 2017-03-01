@@ -170,6 +170,11 @@ public class MediaService extends Service implements
     }
 
     @Override
+    public void play(Song song) {
+        // TODO
+    }
+
+    @Override
     public void play() {
         // TODO
     }
