@@ -9,9 +9,10 @@ import com.icarapovic.metronome.R;
 
 public class MediaUtils {
 
-    private MediaUtils(){}
-
     private static final String DELIMITER = ":";
+
+    private MediaUtils() {
+    }
 
     /**
      * Get string representation of media duration
@@ -65,6 +66,12 @@ public class MediaUtils {
                 .into(view);
     }
 
+    /**
+     * Load album art from MediaStore into an ImageView
+     *
+     * @param albumId ID of the album
+     * @param view    The view to display album artwork
+     */
     public static void loadAlbumArt(int albumId, ImageView view, float quality) {
         Uri sArtworkUri = Uri.parse("content://media/external/audio/albumart");
         Uri uri = ContentUris.withAppendedId(sArtworkUri, albumId);
