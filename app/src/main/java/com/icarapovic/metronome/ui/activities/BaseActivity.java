@@ -48,14 +48,14 @@ public class BaseActivity extends AppCompatActivity {
      * Returns the MediaController to control and
      * get the state of the playback service
      */
-    protected MediaController getController() {
+    public MediaController getController() {
         return mediaController;
     }
 
     /**
      * Returns true if service connection exists, false otherwise
      */
-    protected boolean isServiceBound() {
+    public boolean isServiceBound() {
         return isBound;
     }
 }
