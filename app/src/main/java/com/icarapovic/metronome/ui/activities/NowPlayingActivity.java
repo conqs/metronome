@@ -92,11 +92,13 @@ public class NowPlayingActivity extends AppCompatActivity {
     @OnClick(R.id.previous)
     public void previous() {
         controller.previous();
+        syncState();
     }
 
     @OnClick(R.id.next)
     public void next() {
         controller.next();
+        syncState();
     }
 
     @OnClick(R.id.repeat)

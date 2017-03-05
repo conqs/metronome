@@ -2,6 +2,8 @@ package com.icarapovic.metronome.provider;
 
 import com.icarapovic.metronome.models.Song;
 
+import java.util.List;
+
 public interface MediaController {
 
     int REPEAT_OFF = 0;
@@ -36,6 +38,14 @@ public interface MediaController {
     Song getActiveSong();
 
     /**
+     * Start playback of the provided song and set queue
+     *
+     * @param song  Song to be played
+     * @param queue Queue from which the song originated
+     */
+    void play(Song song, List<Song> queue);
+
+    /**
      * Start playback of the provided song
      *
      * @param song Song to be played
@@ -43,7 +53,7 @@ public interface MediaController {
     void play(Song song);
 
     /**
-     * Start playback after it has been paused
+     * Restart playback after it has been paused
      * */
     void play();
 

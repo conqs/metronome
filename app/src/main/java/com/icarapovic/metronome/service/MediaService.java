@@ -18,6 +18,8 @@ import com.icarapovic.metronome.provider.MediaController;
 import com.icarapovic.metronome.utils.Settings;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MediaService extends Service implements
         AudioManager.OnAudioFocusChangeListener,
@@ -34,6 +36,7 @@ public class MediaService extends Service implements
     private BroadcastReceiver headphonesReceiver;
     private AudioManager audioManager;
     private Song currentSong;
+    private List<Song> queue;
     private IBinder localBinder;
 
     @Override
@@ -42,6 +45,7 @@ public class MediaService extends Service implements
 
         audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         localBinder = new LocalBinder();
+        queue = new ArrayList<>();
         setupMediaPlayer();
         initNoisyReceiver();
     }
@@ -159,7 +163,7 @@ public class MediaService extends Service implements
         try {
             return mediaPlayer.isPlaying();
         } catch (NullPointerException | IllegalStateException ex) {
-            // if mediaPlayer is null, or in an invalid state, its definitely not playing
+            // if mediaPlayer is null, or in an invalid state, its surely not playing
             return false;
         }
     }
@@ -177,6 +181,16 @@ public class MediaService extends Service implements
     @Override
     public Song getActiveSong() {
         return currentSong != null ? currentSong : new Song.Builder().setId(-1).build();
+    }
+
+    @Override
+    public void play(Song song, List<Song> queue) {
+        if (!queue.contains(song)) {
+            throw new IllegalArgumentException("Song does not belong to the queue!");
+        }
+
+        this.queue = queue;
+        play(song);
     }
 
     @Override
@@ -209,12 +223,20 @@ public class MediaService extends Service implements
 
     @Override
     public void next() {
-        // TODO
+        if (queue.contains(currentSong)) {
+            int index = queue.indexOf(currentSong);
+            currentSong = index == (queue.size() - 1) ? queue.get(0) : queue.get(++index);
+            play(currentSong);
+        }
     }
 
     @Override
     public void previous() {
-        // TODO
+        if (queue.contains(currentSong)) {
+            int index = queue.indexOf(currentSong);
+            currentSong = index == 0 ? queue.get(0) : queue.get(--index);
+            play(currentSong);
+        }
     }
 
     @Override
