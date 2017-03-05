@@ -18,7 +18,6 @@ import com.icarapovic.metronome.provider.MediaController;
 import com.icarapovic.metronome.utils.Settings;
 
 import java.io.IOException;
-import java.util.List;
 
 public class MediaService extends Service implements
         AudioManager.OnAudioFocusChangeListener,
@@ -33,9 +32,8 @@ public class MediaService extends Service implements
     private static final String COMMAND_SHUTDOWN = "com.icarapovic.command.COMMAND_SHUTDOWN";
     private MediaPlayer mediaPlayer;
     private BroadcastReceiver headphonesReceiver;
-    private int queuePosition = -1;
-    private List<Song> queue;
     private AudioManager audioManager;
+    private Song currentSong;
     private IBinder localBinder;
 
     @Override
@@ -177,7 +175,14 @@ public class MediaService extends Service implements
     }
 
     @Override
+    public Song getActiveSong() {
+        return currentSong != null ? currentSong : new Song.Builder().setId(-1).build();
+    }
+
+    @Override
     public void play(Song song) {
+        currentSong = song;
+
         try {
             mediaPlayer.reset();
             mediaPlayer.setDataSource(song.getPath());

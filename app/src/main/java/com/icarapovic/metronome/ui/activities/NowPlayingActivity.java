@@ -35,8 +35,8 @@ public class NowPlayingActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onStart() {
+        super.onStart();
         syncState();
     }
 
@@ -45,6 +45,7 @@ public class NowPlayingActivity extends AppCompatActivity {
      */
     private void syncState() {
         playPause.setImageResource(controller.isPlaying() ? R.drawable.ic_pause : R.drawable.ic_play);
+        MediaUtils.loadAlbumArt(controller.getActiveSong().getAlbumId(), albumArt, 1.0f);
         syncRepeatIcon();
         syncShuffleIcon();
     }

@@ -29,6 +29,13 @@ public interface MediaController {
     int getRepeatMode();
 
     /**
+     * Returns the song object that is currently in use
+     *
+     * @return Song that is currently playing/paused
+     */
+    Song getActiveSong();
+
+    /**
      * Start playback of the provided song
      *
      * @param song Song to be played
