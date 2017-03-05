@@ -70,7 +70,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
 
         @OnClick(R.id.layout)
         public void play() {
-            MediaUtils.getMediaController().play();
+            MediaUtils.getMediaController().play(song);
             context.startActivity(new Intent(context, NowPlayingActivity.class));
         }
     }

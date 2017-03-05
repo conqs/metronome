@@ -17,6 +17,7 @@ import com.icarapovic.metronome.models.Song;
 import com.icarapovic.metronome.provider.MediaController;
 import com.icarapovic.metronome.utils.Settings;
 
+import java.io.IOException;
 import java.util.List;
 
 public class MediaService extends Service implements
@@ -29,6 +30,7 @@ public class MediaService extends Service implements
     private static final float VOLUME_MAX = 1.0f;
     private static final float VOLUME_DUCKED = 0.3f;
     private static final String TAG = "MediaService";
+    private static final String COMMAND_SHUTDOWN = "com.icarapovic.command.COMMAND_SHUTDOWN";
     private MediaPlayer mediaPlayer;
     private BroadcastReceiver headphonesReceiver;
     private int queuePosition = -1;
@@ -81,6 +83,11 @@ public class MediaService extends Service implements
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        if (intent != null && intent.getAction() != null) {
+            if (intent.getAction().equals(COMMAND_SHUTDOWN)) {
+                stopSelf();
+            }
+        }
         return START_STICKY;
     }
 
@@ -171,17 +178,28 @@ public class MediaService extends Service implements
 
     @Override
     public void play(Song song) {
-        // TODO
+        try {
+            mediaPlayer.reset();
+            mediaPlayer.setDataSource(song.getPath());
+            mediaPlayer.prepare();
+        } catch (IOException e) {
+            e.printStackTrace();
+            mediaPlayer.reset();
+        }
     }
 
     @Override
     public void play() {
-        // TODO
+        if (!isPlaying()) {
+            mediaPlayer.start();
+        }
     }
 
     @Override
     public void pause() {
-        // TODO
+        if (isPlaying()) {
+            mediaPlayer.pause();
+        }
     }
 
     @Override

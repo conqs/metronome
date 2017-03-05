@@ -38,7 +38,6 @@ public class NowPlayingActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         syncState();
-        // TODO check if service bound, handle worst case
     }
 
     /**
