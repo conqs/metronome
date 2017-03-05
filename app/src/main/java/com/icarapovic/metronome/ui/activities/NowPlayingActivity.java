@@ -45,9 +45,13 @@ public class NowPlayingActivity extends AppCompatActivity {
      */
     private void syncState() {
         playPause.setImageResource(controller.isPlaying() ? R.drawable.ic_pause : R.drawable.ic_play);
-        MediaUtils.loadAlbumArt(controller.getActiveSong().getAlbumId(), albumArt, 1.0f);
+        loadArtwork();
         syncRepeatIcon();
         syncShuffleIcon();
+    }
+
+    private void loadArtwork() {
+        MediaUtils.loadAlbumArt(controller.getActiveSong().getAlbumId(), albumArt, 1.0f);
     }
 
     private void syncShuffleIcon() {
@@ -92,13 +96,13 @@ public class NowPlayingActivity extends AppCompatActivity {
     @OnClick(R.id.previous)
     public void previous() {
         controller.previous();
-        syncState();
+        loadArtwork();
     }
 
     @OnClick(R.id.next)
     public void next() {
         controller.next();
-        syncState();
+        loadArtwork();
     }
 
     @OnClick(R.id.repeat)
