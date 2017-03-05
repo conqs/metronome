@@ -15,17 +15,17 @@
         <activity android:name=".ui.activities.LibraryActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
-
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
         <activity android:name=".ui.activities.NowPlayingActivity"/>
-
+        <!-- TODO remove stopWithTask when service will be able to take care of itself -->
         <service
             android:name=".service.MediaService"
             android:enabled="true"
             android:exported="false"
-            android:permission="com.icarapovic.permission.METRONOME">
+            android:permission="com.icarapovic.permission.METRONOME"
+            android:stopWithTask="true">
             <intent-filter>
                 <action android:name="android.media.AUDIO_BECOMING_NOISY"/>
             </intent-filter>
