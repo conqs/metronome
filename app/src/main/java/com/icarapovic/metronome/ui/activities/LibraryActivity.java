@@ -16,6 +16,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import com.icarapovic.metronome.R;
@@ -31,7 +32,7 @@ import butterknife.ButterKnife;
 
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
-public class LibraryActivity extends BaseActivity {
+public class LibraryActivity extends AppCompatActivity {
 
     private static final int REQUEST_CODE_PERMISSION_STORAGE = 100;
     private static final int REQUEST_CODE_APP_SETTINGS = 1;

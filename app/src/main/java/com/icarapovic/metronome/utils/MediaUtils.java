@@ -1,17 +1,46 @@
 package com.icarapovic.metronome.utils;
 
+import android.content.ComponentName;
 import android.content.ContentUris;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.net.Uri;
+import android.os.IBinder;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.icarapovic.metronome.R;
+import com.icarapovic.metronome.provider.MediaController;
+import com.icarapovic.metronome.service.MediaService;
 
 public class MediaUtils {
 
     private static final String DELIMITER = ":";
 
+    private static ServiceConnection serviceConnection;
+    private static MediaController mediaController;
+    private static boolean isBound = false;
+
     private MediaUtils() {
+    }
+
+    /**
+     * Initialize the MediaController object
+     **/
+    public static void initController(Context context) {
+        initServiceConnection();
+        Intent i = new Intent(context, MediaService.class);
+        context.startService(i);
+        context.bindService(i, serviceConnection, 0);
+    }
+
+    public static MediaController getMediaController() {
+        if (!isBound) {
+            throw new IllegalStateException("MediaController is NULL, did you forget to init?");
+        }
+
+        return mediaController;
     }
 
     /**
@@ -80,6 +109,22 @@ public class MediaUtils {
                 .error(R.drawable.ic_album)
                 .sizeMultiplier(quality)
                 .into(view);
+    }
+
+    private static void initServiceConnection() {
+        serviceConnection = new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder service) {
+                mediaController = ((MediaService.LocalBinder) service).getService();
+                isBound = true;
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+                mediaController = null;
+                isBound = false;
+            }
+        };
     }
 }
 

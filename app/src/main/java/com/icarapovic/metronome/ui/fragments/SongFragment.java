@@ -13,8 +13,6 @@ import com.icarapovic.metronome.R;
 import com.icarapovic.metronome.adapters.SongAdapter;
 import com.icarapovic.metronome.models.Song;
 import com.icarapovic.metronome.provider.LocalMediaProvider;
-import com.icarapovic.metronome.provider.MediaController;
-import com.icarapovic.metronome.ui.activities.BaseActivity;
 
 import java.util.List;
 
@@ -46,10 +44,9 @@ public class SongFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        MediaController controller = ((BaseActivity) getActivity()).getController();
         List<Song> songs = LocalMediaProvider.getInstance().fetchSongs(getContext());
         // create adapter and set it to the recycler view
-        SongAdapter adapter = new SongAdapter(controller, songs);
+        SongAdapter adapter = new SongAdapter(songs);
         mSongRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
         mSongRecycler.setAdapter(adapter);
     }

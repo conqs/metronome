@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import com.icarapovic.metronome.R;
 import com.icarapovic.metronome.models.Song;
-import com.icarapovic.metronome.provider.MediaController;
 import com.icarapovic.metronome.ui.activities.NowPlayingActivity;
 import com.icarapovic.metronome.utils.MediaUtils;
 
@@ -24,10 +23,8 @@ import butterknife.OnClick;
 public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
 
     private List<Song> songs;
-    private MediaController controller;
 
-    public SongAdapter(MediaController controller, List<Song> songs) {
-        this.controller = controller;
+    public SongAdapter(List<Song> songs) {
         this.songs = songs;
     }
 
@@ -73,7 +70,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
 
         @OnClick(R.id.layout)
         public void play() {
-            controller.play(song);
+            MediaUtils.getMediaController().play();
             context.startActivity(new Intent(context, NowPlayingActivity.class));
         }
     }
