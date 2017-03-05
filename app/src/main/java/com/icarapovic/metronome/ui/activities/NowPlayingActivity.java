@@ -3,6 +3,7 @@ package com.icarapovic.metronome.ui.activities;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 
 import com.icarapovic.metronome.R;
 import com.icarapovic.metronome.provider.MediaController;
@@ -22,6 +23,8 @@ public class NowPlayingActivity extends AppCompatActivity {
     ImageView shuffle;
     @BindView(R.id.repeat)
     ImageView repeat;
+    @BindView(R.id.seeker)
+    SeekBar seekBar;
 
     private MediaController controller;
 
@@ -32,6 +35,7 @@ public class NowPlayingActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         controller = MediaUtils.getMediaController();
+        controller.setSeekBar(seekBar);
     }
 
     @Override
