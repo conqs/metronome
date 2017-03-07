@@ -220,6 +220,7 @@ public class MediaService extends Service implements
         currentSong = song;
         if (seekBarUpdateTask != null) {
             seekBarUpdateTask.cancel(true);
+            startSeekBarUpdates();
         }
 
         try {
@@ -287,17 +288,19 @@ public class MediaService extends Service implements
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-
+        if (fromUser) {
+            mediaPlayer.seekTo(progress);
+        }
     }
 
     @Override
     public void onStartTrackingTouch(SeekBar seekBar) {
-
+        mediaPlayer.pause();
     }
 
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
-
+        mediaPlayer.start();
     }
 
     public class LocalBinder extends Binder {

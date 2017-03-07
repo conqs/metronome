@@ -92,7 +92,7 @@ public interface MediaController extends SeekBar.OnSeekBarChangeListener {
     void toggleRepeat();
 
     /**
-     * Set SeekBar used to update playback time
+     * Set SeekBar used to update playback time and support seeking
      */
     void setSeekBar(SeekBar seekBar);
 }
