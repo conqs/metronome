@@ -19,6 +19,7 @@ import com.icarapovic.metronome.provider.MediaController;
 import com.icarapovic.metronome.utils.Settings;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -44,7 +45,7 @@ public class MediaService extends Service implements
     private Song currentSong;
     private List<Song> queue;
     private IBinder localBinder;
-    private SeekBar seekBar;
+    private WeakReference<SeekBar> seekBar;
     private ScheduledExecutorService scheduledExecutor;
     private ScheduledFuture<?> seekBarUpdateTask;
 
@@ -142,7 +143,27 @@ public class MediaService extends Service implements
 
     @Override
     public void onCompletion(MediaPlayer mp) {
-        // TODO
+        int position = queue.indexOf(currentSong);
+        switch (getRepeatMode()) {
+            case REPEAT_OFF:
+                if (position < queue.size() - 1) {
+                    play(queue.get(++position));
+                } else {
+                    mediaPlayer.reset();
+                }
+                break;
+            case REPEAT_ONE:
+                mediaPlayer.reset();
+                play(currentSong);
+                break;
+            case REPEAT_ALL:
+                if (position < queue.size() - 1) {
+                    play(queue.get(0));
+                } else {
+                    next();
+                }
+                break;
+        }
     }
 
     @Override
@@ -155,11 +176,11 @@ public class MediaService extends Service implements
             seekBarUpdateTask.cancel(true);
         }
 
-        seekBar.setMax((int) getActiveSong().getDuration());
+        seekBar.get().setMax((int) getActiveSong().getDuration());
         seekBarUpdateTask = scheduledExecutor.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
-                seekBar.setProgress(mediaPlayer.getCurrentPosition());
+                seekBar.get().setProgress(mediaPlayer.getCurrentPosition());
             }
         }, 0, 1000 / SEEK_BAR_FPS, TimeUnit.MILLISECONDS);
     }
@@ -279,8 +300,8 @@ public class MediaService extends Service implements
 
     @Override
     public void setSeekBar(SeekBar seekBar) {
-        this.seekBar = seekBar;
-        this.seekBar.setOnSeekBarChangeListener(this);
+        this.seekBar = new WeakReference<>(seekBar);
+        this.seekBar.get().setOnSeekBarChangeListener(this);
         if (isPlaying()) {
             startSeekBarUpdates();
         }
