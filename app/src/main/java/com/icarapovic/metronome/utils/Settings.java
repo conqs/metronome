@@ -11,6 +11,7 @@ public class Settings {
     private static final String SETTINGS = "com.icarapovic.metronome.settings.SETTINGS";
     private static final String PREF_SHUFFLE = "com.icarapovic.metronome.settings.PREF_SHUFFLE";
     private static final String PREF_REPEAT = "com.icarapovic.metronome.settings.PREF_REPEAT";
+    private static final String PREF_SHOW_ARTWORK_IN_SONGS = "com.icarapovic.metronome.settings.PREF_SHOW_ARTWORK_IN_SONGS";
 
     // -----  HELPER METHODS -------
 
@@ -28,7 +29,7 @@ public class Settings {
         return getPrefs(context).edit();
     }
 
-    // -----  SETTINGS -------
+    // -----  MEDIA SETTINGS -------
 
     /**
      * Toggles shuffle mode ON or OFF
@@ -68,5 +69,21 @@ public class Settings {
      */
     public static int getRepeatMode(Context context) {
         return getPrefs(context).getInt(PREF_REPEAT, MediaController.REPEAT_OFF);
+    }
+
+    // ----- UI SETTINGS ---------
+
+    /**
+     * Sets album artwork in song list on or off
+     */
+    public static void setShowArtworkInSongList(Context context, boolean showArtwork) {
+        getEditor(context).putBoolean(PREF_SHOW_ARTWORK_IN_SONGS, showArtwork).apply();
+    }
+
+    /**
+     * Returns true if songs list should show album artwork, false otherwise
+     */
+    public static boolean getShouldShowArtworkInSongsList(Context context) {
+        return getPrefs(context).getBoolean(PREF_SHOW_ARTWORK_IN_SONGS, true);
     }
 }
