@@ -91,7 +91,6 @@ public class MediaUtils {
                 .placeholder(R.drawable.ic_album)
                 .error(R.drawable.ic_album)
                 .sizeMultiplier(quality)
-                .dontAnimate()
                 .into(view);
     }
 
@@ -108,6 +107,7 @@ public class MediaUtils {
                 .loadFromMediaStore(uri)
                 .error(R.drawable.ic_album)
                 .sizeMultiplier(quality)
+                .dontAnimate()
                 .into(view);
     }
 

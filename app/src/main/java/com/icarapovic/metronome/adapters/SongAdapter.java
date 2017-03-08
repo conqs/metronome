@@ -1,7 +1,9 @@
 package com.icarapovic.metronome.adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -52,6 +54,9 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
+
+        private static final String ARTWORK = "artwork";
+
         @BindView(R.id.album_art)
         ImageView albumArt;
         @BindView(R.id.song_title)
@@ -72,7 +77,9 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
         public void play() {
             Intent nowPlaying = new Intent(context, NowPlayingActivity.class);
             MediaUtils.getMediaController().play(song, songs);
-            context.startActivity(nowPlaying);
+            ActivityOptionsCompat options = ActivityOptionsCompat.
+                    makeSceneTransitionAnimation((Activity) context, albumArt, ARTWORK);
+            context.startActivity(nowPlaying, options.toBundle());
         }
     }
 }
