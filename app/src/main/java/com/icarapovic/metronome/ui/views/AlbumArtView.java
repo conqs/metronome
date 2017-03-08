@@ -1,11 +1,10 @@
 package com.icarapovic.metronome.ui.views;
 
 import android.content.Context;
+import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
-import android.widget.ImageView;
 
-public class AlbumArtView extends ImageView {
-
+public class AlbumArtView extends AppCompatImageView {
     public AlbumArtView(Context context) {
         this(context, null);
     }
@@ -15,9 +14,8 @@ public class AlbumArtView extends ImageView {
     }
 
     public AlbumArtView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr, 0);
+        super(context, attrs, defStyleAttr);
         setScaleType(ScaleType.FIT_XY);
-        // TODO implement setting a placeholder via code and XML
     }
 
     @Override
