@@ -6,14 +6,16 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 
 import com.icarapovic.metronome.R;
-import com.icarapovic.metronome.provider.MediaController;
+import com.icarapovic.metronome.service.MediaController;
+import com.icarapovic.metronome.service.PlaybackListener;
 import com.icarapovic.metronome.utils.MediaUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class NowPlayingActivity extends AppCompatActivity {
+public class NowPlayingActivity extends AppCompatActivity implements
+        PlaybackListener {
 
     @BindView(R.id.album_art)
     ImageView albumArt;
@@ -41,17 +43,19 @@ public class NowPlayingActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        syncState();
+        onPlaybackStateChanged();
     }
 
-    /**
-     * Sync the UI with the playback state
-     */
-    private void syncState() {
-        playPause.setImageResource(controller.isPlaying() ? R.drawable.ic_pause : R.drawable.ic_play);
-        loadArtwork();
-        syncRepeatIcon();
-        syncShuffleIcon();
+    @Override
+    protected void onResume() {
+        super.onResume();
+        controller.addPlaybackStateListener(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        controller.removePlaybackStateListener(this);
     }
 
     private void loadArtwork() {
@@ -94,7 +98,7 @@ public class NowPlayingActivity extends AppCompatActivity {
             controller.play();
         }
 
-        syncState();
+        onPlaybackStateChanged();
     }
 
     @OnClick(R.id.previous)
@@ -118,6 +122,14 @@ public class NowPlayingActivity extends AppCompatActivity {
     @OnClick(R.id.shuffle)
     public void shuffle() {
         controller.toggleShuffle();
+        syncShuffleIcon();
+    }
+
+    @Override
+    public void onPlaybackStateChanged() {
+        playPause.setImageResource(controller.isPlaying() ? R.drawable.ic_pause : R.drawable.ic_play);
+        loadArtwork();
+        syncRepeatIcon();
         syncShuffleIcon();
     }
 }

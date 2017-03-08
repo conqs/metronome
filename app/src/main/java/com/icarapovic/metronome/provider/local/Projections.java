@@ -1,4 +1,4 @@
-package com.icarapovic.metronome.provider;
+package com.icarapovic.metronome.provider.local;
 
 import android.provider.MediaStore;
 

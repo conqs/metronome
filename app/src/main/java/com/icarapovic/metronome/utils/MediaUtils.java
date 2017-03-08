@@ -11,7 +11,7 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.icarapovic.metronome.R;
-import com.icarapovic.metronome.provider.MediaController;
+import com.icarapovic.metronome.service.MediaController;
 import com.icarapovic.metronome.service.MediaService;
 
 public class MediaUtils {

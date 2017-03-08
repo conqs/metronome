@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 
 import com.icarapovic.metronome.R;
 import com.icarapovic.metronome.adapters.AlbumAdapter;
-import com.icarapovic.metronome.provider.LocalMediaProvider;
+import com.icarapovic.metronome.provider.local.LocalMediaProvider;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -24,6 +24,11 @@ public class AlbumFragment extends Fragment {
 
     public static AlbumFragment newInstance() {
         return new AlbumFragment();
+    }
+
+    public static String getTitle() {
+        // TODO extract
+        return "Album";
     }
 
     @Nullable
@@ -39,10 +44,5 @@ public class AlbumFragment extends Fragment {
         AlbumAdapter adapter = new AlbumAdapter(LocalMediaProvider.getInstance().fetchAlbums(getContext()));
         mAlbumRecycler.setLayoutManager(new GridLayoutManager(getContext(), 2));
         mAlbumRecycler.setAdapter(adapter);
-    }
-
-    public static String getTitle() {
-        // TODO extract
-        return "Album";
     }
 }

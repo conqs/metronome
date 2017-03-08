@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.icarapovic.metronome.R;
 import com.icarapovic.metronome.models.Playlist;
-import com.icarapovic.metronome.provider.LocalMediaProvider;
+import com.icarapovic.metronome.provider.local.LocalMediaProvider;
 
 import java.util.List;
 

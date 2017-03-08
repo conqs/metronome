@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 
 import com.icarapovic.metronome.R;
 import com.icarapovic.metronome.adapters.PlaylistAdapter;
-import com.icarapovic.metronome.provider.LocalMediaProvider;
+import com.icarapovic.metronome.provider.local.LocalMediaProvider;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -24,6 +24,11 @@ public class PlaylistFragment extends Fragment {
 
     public static PlaylistFragment newInstance() {
         return new PlaylistFragment();
+    }
+
+    public static String getTitle() {
+        // TODO extract
+        return "Playlists";
     }
 
     @Nullable
@@ -39,10 +44,5 @@ public class PlaylistFragment extends Fragment {
         PlaylistAdapter adapter = new PlaylistAdapter(LocalMediaProvider.getInstance().fetchPlaylists(getContext()));
         mPlaylistRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
         mPlaylistRecycler.setAdapter(adapter);
-    }
-
-    public static String getTitle() {
-        // TODO extract
-        return "Playlists";
     }
 }

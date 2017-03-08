@@ -15,7 +15,6 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.widget.SeekBar;
 
 import com.icarapovic.metronome.models.Song;
-import com.icarapovic.metronome.provider.MediaController;
 import com.icarapovic.metronome.utils.Settings;
 
 import java.io.IOException;
@@ -48,6 +47,7 @@ public class MediaService extends Service implements
     private WeakReference<SeekBar> seekBar;
     private ScheduledExecutorService scheduledExecutor;
     private ScheduledFuture<?> seekBarUpdateTask;
+    private List<PlaybackListener> playbackListeners;
 
     @Override
     public void onCreate() {
@@ -57,6 +57,7 @@ public class MediaService extends Service implements
         localBinder = new LocalBinder();
         queue = new ArrayList<>();
         scheduledExecutor = Executors.newSingleThreadScheduledExecutor();
+        playbackListeners = new ArrayList<>();
         setupMediaPlayer();
         initNoisyReceiver();
     }
@@ -150,6 +151,7 @@ public class MediaService extends Service implements
                     play(queue.get(++position));
                 } else {
                     mediaPlayer.reset();
+                    notifyPlaybackListeners();
                 }
                 break;
             case REPEAT_ONE:
@@ -157,7 +159,7 @@ public class MediaService extends Service implements
                 play(currentSong);
                 break;
             case REPEAT_ALL:
-                if (position < queue.size() - 1) {
+                if (position == queue.size() - 1) {
                     play(queue.get(0));
                 } else {
                     next();
@@ -169,6 +171,10 @@ public class MediaService extends Service implements
     @Override
     public void onPrepared(MediaPlayer mp) {
         mp.start();
+        if (seekBar != null) {
+            startSeekBarUpdates();
+        }
+        notifyPlaybackListeners();
     }
 
     private void startSeekBarUpdates() {
@@ -241,7 +247,6 @@ public class MediaService extends Service implements
         currentSong = song;
         if (seekBarUpdateTask != null) {
             seekBarUpdateTask.cancel(true);
-            startSeekBarUpdates();
         }
 
         try {
@@ -308,6 +313,22 @@ public class MediaService extends Service implements
     }
 
     @Override
+    public void addPlaybackStateListener(PlaybackListener listener) {
+        playbackListeners.add(listener);
+    }
+
+    @Override
+    public void removePlaybackStateListener(PlaybackListener listener) {
+        playbackListeners.remove(listener);
+    }
+
+    private void notifyPlaybackListeners() {
+        for (PlaybackListener p : playbackListeners) {
+            p.onPlaybackStateChanged();
+        }
+    }
+
+    @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
         if (fromUser) {
             mediaPlayer.seekTo(progress);
@@ -316,12 +337,14 @@ public class MediaService extends Service implements
 
     @Override
     public void onStartTrackingTouch(SeekBar seekBar) {
+        seekBarUpdateTask.cancel(true);
         mediaPlayer.pause();
     }
 
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
         mediaPlayer.start();
+        startSeekBarUpdates();
     }
 
     public class LocalBinder extends Binder {

@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 
 import com.icarapovic.metronome.R;
 import com.icarapovic.metronome.adapters.GenreAdapter;
-import com.icarapovic.metronome.provider.LocalMediaProvider;
+import com.icarapovic.metronome.provider.local.LocalMediaProvider;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -24,6 +24,11 @@ public class GenresFragment extends Fragment {
 
     public static GenresFragment newInstance() {
         return new GenresFragment();
+    }
+
+    public static String getTitle() {
+        // TODO extract
+        return "Genres";
     }
 
     @Nullable
@@ -39,10 +44,5 @@ public class GenresFragment extends Fragment {
         GenreAdapter adapter = new GenreAdapter(LocalMediaProvider.getInstance().fetchGenres(getContext()));
         mGenresRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
         mGenresRecycler.setAdapter(adapter);
-    }
-
-    public static String getTitle() {
-        // TODO extract
-        return "Genres";
     }
 }

@@ -1,4 +1,4 @@
-package com.icarapovic.metronome.provider;
+package com.icarapovic.metronome.provider.local;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -10,6 +10,7 @@ import com.icarapovic.metronome.models.Artist;
 import com.icarapovic.metronome.models.Genre;
 import com.icarapovic.metronome.models.Playlist;
 import com.icarapovic.metronome.models.Song;
+import com.icarapovic.metronome.provider.MediaProvider;
 
 import java.util.ArrayList;
 import java.util.List;

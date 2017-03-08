@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 
 import com.icarapovic.metronome.R;
 import com.icarapovic.metronome.adapters.ArtistAdapter;
-import com.icarapovic.metronome.provider.LocalMediaProvider;
+import com.icarapovic.metronome.provider.local.LocalMediaProvider;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -24,6 +24,11 @@ public class ArtistFragment extends Fragment {
 
     public static ArtistFragment newInstance() {
         return new ArtistFragment();
+    }
+
+    public static String getTitle() {
+        // TODO extract
+        return "Artist";
     }
 
     @Nullable
@@ -39,10 +44,5 @@ public class ArtistFragment extends Fragment {
         ArtistAdapter adapter = new ArtistAdapter(LocalMediaProvider.getInstance().fetchArtists(getContext()));
         mArtistRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
         mArtistRecycler.setAdapter(adapter);
-    }
-
-    public static String getTitle() {
-        // TODO extract
-        return "Artist";
     }
 }

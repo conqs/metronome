@@ -3,7 +3,7 @@ package com.icarapovic.metronome.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.icarapovic.metronome.provider.MediaController;
+import com.icarapovic.metronome.service.MediaController;
 
 public class Settings {
 
