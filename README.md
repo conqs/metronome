@@ -21,7 +21,7 @@ Supports Android 5.0 and higher devices
 
 **Permissions required:**
 
-* READ_EXTERNAL_STORAGE - needed to play anything
+* WAKE_LOCK - keep music playing in background
 * WRITE_EXTERNAL_STORAGE - Android requirement for loading album artwork
 
 
