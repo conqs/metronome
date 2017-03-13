@@ -11,7 +11,7 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/toolbar_height"
-        tools:background="@color/md_blue_600"/>
+        android:background="@color/md_blue_600"/>
 
     <com.icarapovic.metronome.ui.views.AlbumArtView
         android:id="@+id/album_art"
@@ -30,28 +30,28 @@
 
         <ImageView
             android:id="@+id/repeat"
-            android:src="@drawable/ic_repeat"
-            style="@style/MediaControl"/>
+            style="@style/MediaControl"
+            android:src="@drawable/ic_repeat"/>
 
         <ImageView
             android:id="@+id/previous"
-            android:src="@drawable/ic_previous"
-            style="@style/MediaControl"/>
+            style="@style/MediaControl"
+            android:src="@drawable/ic_previous"/>
 
         <ImageView
             android:id="@+id/play_pause"
-            android:src="@drawable/ic_play"
-            style="@style/MediaControl"/>
+            style="@style/MediaControl"
+            android:src="@drawable/ic_play"/>
 
         <ImageView
             android:id="@+id/next"
-            android:src="@drawable/ic_next"
-            style="@style/MediaControl"/>
+            style="@style/MediaControl"
+            android:src="@drawable/ic_next"/>
 
         <ImageView
             android:id="@+id/shuffle"
-            android:src="@drawable/ic_shuffle_on"
-            style="@style/MediaControl"/>
+            style="@style/MediaControl"
+            android:src="@drawable/ic_shuffle_on"/>
 
     </LinearLayout>
 
@@ -59,17 +59,17 @@
         android:id="@+id/toggle_queue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_up"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:padding="@dimen/spacing_small"/>
+        android:padding="@dimen/spacing_small"
+        android:src="@drawable/ic_up"/>
 
     <SeekBar
         android:id="@+id/seeker"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/spacing_small"
+        android:layout_below="@id/album_art"
         android:paddingBottom="@dimen/spacing_small"
-        android:layout_below="@id/album_art"/>
+        android:paddingTop="@dimen/spacing_small"/>
 
 </RelativeLayout>

@@ -2,6 +2,7 @@ package com.icarapovic.metronome.ui.activities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 
@@ -27,6 +28,8 @@ public class NowPlayingActivity extends AppCompatActivity implements
     ImageView repeat;
     @BindView(R.id.seeker)
     SeekBar seekBar;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
 
     private MediaController controller;
 
@@ -38,6 +41,7 @@ public class NowPlayingActivity extends AppCompatActivity implements
 
         controller = MediaUtils.getMediaController();
         controller.setSeekBar(seekBar);
+        setSupportActionBar(toolbar);
     }
 
     @Override
