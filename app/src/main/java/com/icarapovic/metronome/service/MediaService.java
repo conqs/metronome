@@ -1,5 +1,7 @@
 package com.icarapovic.metronome.service;
 
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -11,10 +13,13 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.widget.SeekBar;
 
+import com.icarapovic.metronome.R;
 import com.icarapovic.metronome.models.Song;
+import com.icarapovic.metronome.ui.activities.NowPlayingActivity;
 import com.icarapovic.metronome.utils.Settings;
 
 import java.io.IOException;
@@ -48,6 +53,7 @@ public class MediaService extends Service implements
     private ScheduledExecutorService scheduledExecutor;
     private ScheduledFuture<?> seekBarUpdateTask;
     private List<PlaybackListener> playbackListeners;
+    private Notification notification;
 
     @Override
     public void onCreate() {
@@ -112,12 +118,14 @@ public class MediaService extends Service implements
             case AudioManager.AUDIOFOCUS_LOSS: {
                 if (isPlaying()) {
                     mediaPlayer.stop();
+                    dismissNotification();
                 }
                 break;
             }
             // Audio focus temporary lost, pause playback, will continue soon
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT: {
                 pause();
+
                 break;
             }
             // Audio focus temporary lost, continue playback with low volume
@@ -152,6 +160,7 @@ public class MediaService extends Service implements
                 } else {
                     mediaPlayer.reset();
                     notifyPlaybackListeners();
+                    dismissNotification();
                 }
                 break;
             case REPEAT_ONE:
@@ -175,6 +184,7 @@ public class MediaService extends Service implements
             startSeekBarUpdates();
         }
         notifyPlaybackListeners();
+        showNotification();
     }
 
     private void startSeekBarUpdates() {
@@ -199,6 +209,7 @@ public class MediaService extends Service implements
         audioManager.abandonAudioFocus(this);
         unregisterReceiver(headphonesReceiver);
         NotificationManagerCompat.from(this).cancel(NOTIFICATION_ID);
+        dismissNotification();
     }
 
     @Nullable
@@ -264,6 +275,7 @@ public class MediaService extends Service implements
         if (!isPlaying()) {
             mediaPlayer.start();
             startSeekBarUpdates();
+            showNotification();
         }
     }
 
@@ -272,6 +284,7 @@ public class MediaService extends Service implements
         if (isPlaying()) {
             mediaPlayer.pause();
             seekBarUpdateTask.cancel(true);
+            dismissNotification();
         }
     }
 
@@ -345,6 +358,35 @@ public class MediaService extends Service implements
     public void onStopTrackingTouch(SeekBar seekBar) {
         mediaPlayer.start();
         startSeekBarUpdates();
+    }
+
+    public void showNotification() {
+        startForeground(NOTIFICATION_ID, getNotification());
+    }
+
+    public void dismissNotification() {
+        stopForeground(true);
+    }
+
+    private Notification getNotification() {
+        if (notification != null) {
+            return notification;
+        } else {
+            notification = new NotificationCompat.Builder(this)
+                    .setContentTitle("Metronome")
+                    .setContentText("Music is playing")
+                    .setOngoing(true)
+                    .setSmallIcon(R.drawable.ic_play)
+                    .setContentIntent(createNowPlayingIntent())
+                    .build();
+        }
+
+        return notification;
+    }
+
+    private PendingIntent createNowPlayingIntent() {
+        Intent intent = new Intent(this, NowPlayingActivity.class);
+        return PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     public class LocalBinder extends Binder {
