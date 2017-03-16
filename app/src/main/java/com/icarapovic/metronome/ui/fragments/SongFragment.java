@@ -21,17 +21,17 @@ import butterknife.ButterKnife;
 
 public class SongFragment extends Fragment {
     public static final String TAG = "com.icarapovic.metronome.SONG_FRAGMENT";
+    private static final String FRAGMENT_TITLE = "Songs";
 
     @BindView(R.id.recycler_song)
-    RecyclerView mSongRecycler;
+    RecyclerView songRecycler;
 
     public static SongFragment newInstance() {
         return new SongFragment();
     }
 
     public static String getTitle() {
-        // TODO extract
-        return "Songs";
+        return FRAGMENT_TITLE;
     }
 
     @Nullable
@@ -47,7 +47,7 @@ public class SongFragment extends Fragment {
         List<Song> songs = LocalMediaProvider.getInstance().fetchSongs(getContext());
         // create adapter and set it to the recycler view
         SongAdapter adapter = new SongAdapter(songs);
-        mSongRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
-        mSongRecycler.setAdapter(adapter);
+        songRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
+        songRecycler.setAdapter(adapter);
     }
 }
