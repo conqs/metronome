@@ -43,9 +43,10 @@ public class NowPlayingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_now_playing);
         ButterKnife.bind(this);
 
+        setSupportActionBar(toolbar);
         controller = MediaUtils.getMediaController();
         controller.setSeekBar(seekBar);
-        setSupportActionBar(toolbar);
+
 
         syncListener = createSyncListener();
     }

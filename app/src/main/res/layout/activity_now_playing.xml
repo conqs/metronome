@@ -11,7 +11,7 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/toolbar_height"
-        android:background="@color/md_blue_600"/>
+        android:background="@color/colorPrimary"/>
 
     <com.icarapovic.metronome.ui.views.AlbumArtView
         android:id="@+id/album_art"
