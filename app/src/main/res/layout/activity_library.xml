@@ -7,9 +7,26 @@
     android:layout_height="match_parent"
     android:background="@color/md_grey_900">
 
-    <include
-        android:id="@+id/layout_included_app_bar"
-        layout="@layout/included_app_bar"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/layout_included_app_bar"
+            layout="@layout/included_app_bar"/>
+
+        <TextView
+            android:id="@+id/mini_player"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:padding="@dimen/spacing_medium"
+            android:text="Now playing"
+            android:textSize="@dimen/text_size_normal"
+            android:visibility="gone"/>
+    </LinearLayout>
+
 
     <android.support.design.widget.NavigationView
         android:id="@+id/navigation_view"
@@ -17,8 +34,8 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="false"
-        app:itemTextAppearance="@style/Text.Drawer.Menu"
         app:headerLayout="@layout/included_navigation_header"
+        app:itemTextAppearance="@style/Text.Drawer.Menu"
         app:menu="@menu/menu_navigation_drawer">
 
         <LinearLayout
@@ -26,16 +43,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:orientation="vertical"
-            android:layout_marginBottom="@dimen/spacing_small">
+            android:layout_marginBottom="@dimen/spacing_small"
+            android:orientation="vertical">
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/divider_height"
-                android:background="@color/md_grey_700"
                 android:layout_marginBottom="@dimen/spacing_medium"
+                android:layout_marginEnd="@dimen/spacing_medium"
                 android:layout_marginStart="@dimen/spacing_medium"
-                android:layout_marginEnd="@dimen/spacing_medium"/>
+                android:background="@color/md_grey_700"/>
 
             <TextView
                 style="@style/Text.Drawer.Info"

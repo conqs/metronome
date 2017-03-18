@@ -1,8 +1,11 @@
 package com.icarapovic.metronome.ui.activities;
 
 import android.annotation.TargetApi;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
@@ -12,25 +15,32 @@ import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.widget.TextView;
 
 import com.icarapovic.metronome.R;
 import com.icarapovic.metronome.adapters.PagerAdapter;
+import com.icarapovic.metronome.service.MediaController;
+import com.icarapovic.metronome.service.MediaService;
 import com.icarapovic.metronome.ui.fragments.AlbumFragment;
 import com.icarapovic.metronome.ui.fragments.ArtistFragment;
 import com.icarapovic.metronome.ui.fragments.GenresFragment;
 import com.icarapovic.metronome.ui.fragments.PlaylistFragment;
 import com.icarapovic.metronome.ui.fragments.SongFragment;
+import com.icarapovic.metronome.utils.MediaUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 
 public class LibraryActivity extends AppCompatActivity {
 
@@ -38,17 +48,21 @@ public class LibraryActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_APP_SETTINGS = 1;
 
     @BindView(R.id.toolbar)
-    Toolbar mToolbar;
+    Toolbar toolbar;
     @BindView(R.id.drawer_layout)
-    DrawerLayout mDrawerLayout;
+    DrawerLayout drawerLayout;
     @BindView(R.id.navigation_view)
-    NavigationView mNavigation;
+    NavigationView navigation;
     @BindView(R.id.tab_bar)
-    TabLayout mTabLayout;
+    TabLayout tabLayout;
     @BindView(R.id.view_pager)
-    ViewPager mViewPager;
+    ViewPager viewPager;
+    @BindView(R.id.mini_player)
+    TextView miniPlayer;
 
-    private ActionBarDrawerToggle mToggle;
+    private ActionBarDrawerToggle toggle;
+    private BroadcastReceiver syncListener;
+    private MediaController controller;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,15 +71,25 @@ public class LibraryActivity extends AppCompatActivity {
 
         // activate BindView annotations
         ButterKnife.bind(this);
-        setSupportActionBar(mToolbar);
+        setSupportActionBar(toolbar);
         initNavigationDrawer();
+        syncListener = createSyncListener();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkPermissions();
         } else {
             initViewPagerWithTabs();
         }
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        LocalBroadcastManager.getInstance(this)
+                .registerReceiver(syncListener, new IntentFilter(MediaService.ACTION_SYNC_STATE));
+        if (controller != null) {
+            updateMiniPlayer();
+        }
     }
 
     @Override
@@ -76,6 +100,13 @@ public class LibraryActivity extends AppCompatActivity {
                 initViewPagerWithTabs();
             }
         }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        LocalBroadcastManager.getInstance(this)
+                .unregisterReceiver(syncListener);
     }
 
     @TargetApi(Build.VERSION_CODES.M)
@@ -90,11 +121,11 @@ public class LibraryActivity extends AppCompatActivity {
     }
 
     private void initNavigationDrawer() {
-        mToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.label_open_drawer, R.string.label_close_drawer);
-        mDrawerLayout.addDrawerListener(mToggle);
+        toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.label_open_drawer, R.string.label_close_drawer);
+        drawerLayout.addDrawerListener(toggle);
 
         // sync toggle with navigation drawer, showing arrow or hamburger menu
-        mToggle.syncState();
+        toggle.syncState();
     }
 
     private void initViewPagerWithTabs() {
@@ -104,8 +135,8 @@ public class LibraryActivity extends AppCompatActivity {
         adapter.addFragment(ArtistFragment.newInstance(), ArtistFragment.getTitle());
         adapter.addFragment(GenresFragment.newInstance(), GenresFragment.getTitle());
         adapter.addFragment(PlaylistFragment.newInstance(), PlaylistFragment.getTitle());
-        mViewPager.setAdapter(adapter);
-        mTabLayout.setupWithViewPager(mViewPager);
+        viewPager.setAdapter(adapter);
+        tabLayout.setupWithViewPager(viewPager);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -156,6 +187,26 @@ public class LibraryActivity extends AppCompatActivity {
                         .show();
             }
         }
+    }
+
+    private BroadcastReceiver createSyncListener() {
+        return new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context c, Intent i) {
+                if (i.getAction().equals(MediaService.ACTION_SYNC_STATE)) {
+                    if (controller == null) {
+                        controller = MediaUtils.getMediaController();
+                    }
+
+                    updateMiniPlayer();
+                }
+            }
+        };
+    }
+
+    private void updateMiniPlayer() {
+        miniPlayer.setVisibility(controller.isPlaying() ? VISIBLE : GONE);
+        miniPlayer.setText(controller.isPlaying() ? controller.getActiveSong().getTitle() : "");
     }
 
     @Override
