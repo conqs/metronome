@@ -16,15 +16,10 @@
             android:id="@+id/layout_included_app_bar"
             layout="@layout/included_app_bar"/>
 
-        <TextView
+        <include
             android:id="@+id/mini_player"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/colorPrimary"
-            android:padding="@dimen/spacing_medium"
-            android:text="Now playing"
-            android:textSize="@dimen/text_size_normal"
-            android:visibility="gone"/>
+            layout="@layout/included_mini_player"/>
+
     </LinearLayout>
 
 

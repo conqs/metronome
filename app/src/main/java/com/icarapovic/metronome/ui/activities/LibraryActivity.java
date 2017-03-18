@@ -22,6 +22,8 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.icarapovic.metronome.R;
@@ -37,6 +39,7 @@ import com.icarapovic.metronome.utils.MediaUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.view.View.GONE;
@@ -58,7 +61,11 @@ public class LibraryActivity extends AppCompatActivity {
     @BindView(R.id.view_pager)
     ViewPager viewPager;
     @BindView(R.id.mini_player)
-    TextView miniPlayer;
+    LinearLayout miniPlayer;
+    @BindView(R.id.song_name)
+    TextView songName;
+    @BindView(R.id.play_pause)
+    ImageView playPause;
 
     private ActionBarDrawerToggle toggle;
     private BroadcastReceiver syncListener;
@@ -205,8 +212,24 @@ public class LibraryActivity extends AppCompatActivity {
     }
 
     private void updateMiniPlayer() {
-        miniPlayer.setVisibility(controller.isPlaying() ? VISIBLE : GONE);
-        miniPlayer.setText(controller.isPlaying() ? controller.getActiveSong().getTitle() : "");
+        miniPlayer.setVisibility(controller.getActiveSong() != null ? VISIBLE : GONE);
+        songName.setText(controller.getActiveSong().getTitle());
+        playPause.setImageResource(controller.isPlaying() ? R.drawable.ic_pause : R.drawable.ic_play);
+    }
+
+    @OnClick(R.id.play_pause)
+    public void onPlayPause() {
+        if (controller.isPlaying()) {
+            controller.pause();
+        } else {
+            controller.play();
+        }
+        updateMiniPlayer();
+    }
+
+    @OnClick(R.id.mini_player)
+    public void openNowPlaying() {
+        startActivity(new Intent(this, NowPlayingActivity.class));
     }
 
     @Override

@@ -198,6 +198,10 @@ public class MediaService extends Service implements
             seekBarUpdateTask.cancel(true);
         }
 
+        if (seekBar == null) {
+            return;
+        }
+
         seekBar.get().setMax((int) getActiveSong().getDuration());
         seekBarUpdateTask = scheduledExecutor.scheduleAtFixedRate(new Runnable() {
             @Override

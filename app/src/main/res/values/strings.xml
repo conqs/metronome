@@ -15,4 +15,5 @@
     <string name="drawer_about">About</string>
     <string name="drawer_changelog">Changelog</string>
     <string name="drawer_debug_options">DEVELOPER OPTIONS</string>
+    <string name="desc_play_pause_button">Play or pause current song</string>
 </resources>
