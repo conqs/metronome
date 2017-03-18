@@ -15,6 +15,7 @@ import android.os.PowerManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.widget.SeekBar;
 
 import com.icarapovic.metronome.R;
@@ -37,12 +38,15 @@ public class MediaService extends Service implements
         MediaPlayer.OnPreparedListener,
         MediaController {
 
+    public static final String ACTION_SHUTDOWN = "com.icarapovic.service.ACTION_SHUTDOWN";
+    public static final String ACTION_SYNC_STATE = "com.icarapovic.service.ACTION_SYNC_STATE";
+
     private static final int SEEK_BAR_FPS = 30;
     private static final int NOTIFICATION_ID = 2905992;
     private static final float VOLUME_MAX = 1.0f;
     private static final float VOLUME_DUCKED = 0.3f;
     private static final String TAG = "MediaService";
-    private static final String COMMAND_SHUTDOWN = "com.icarapovic.command.COMMAND_SHUTDOWN";
+
     private MediaPlayer mediaPlayer;
     private BroadcastReceiver headphonesReceiver;
     private AudioManager audioManager;
@@ -52,8 +56,8 @@ public class MediaService extends Service implements
     private WeakReference<SeekBar> seekBar;
     private ScheduledExecutorService scheduledExecutor;
     private ScheduledFuture<?> seekBarUpdateTask;
-    private List<PlaybackListener> playbackListeners;
     private Notification notification;
+    private LocalBroadcastManager broadcastManager;
 
     @Override
     public void onCreate() {
@@ -63,7 +67,7 @@ public class MediaService extends Service implements
         localBinder = new LocalBinder();
         queue = new ArrayList<>();
         scheduledExecutor = Executors.newSingleThreadScheduledExecutor();
-        playbackListeners = new ArrayList<>();
+        broadcastManager = LocalBroadcastManager.getInstance(this);
         setupMediaPlayer();
         initNoisyReceiver();
     }
@@ -104,7 +108,7 @@ public class MediaService extends Service implements
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent != null && intent.getAction() != null) {
-            if (intent.getAction().equals(COMMAND_SHUTDOWN)) {
+            if (intent.getAction().equals(ACTION_SHUTDOWN)) {
                 stopSelf();
             }
         }
@@ -125,7 +129,6 @@ public class MediaService extends Service implements
             // Audio focus temporary lost, pause playback, will continue soon
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT: {
                 pause();
-
                 break;
             }
             // Audio focus temporary lost, continue playback with low volume
@@ -159,7 +162,6 @@ public class MediaService extends Service implements
                     play(queue.get(++position));
                 } else {
                     mediaPlayer.reset();
-                    notifyPlaybackListeners();
                     dismissNotification();
                 }
                 break;
@@ -183,8 +185,12 @@ public class MediaService extends Service implements
         if (seekBar != null) {
             startSeekBarUpdates();
         }
-        notifyPlaybackListeners();
         showNotification();
+        broadcastManager.sendBroadcast(createSyncIntent());
+    }
+
+    private Intent createSyncIntent() {
+        return new Intent(ACTION_SYNC_STATE);
     }
 
     private void startSeekBarUpdates() {
@@ -322,22 +328,6 @@ public class MediaService extends Service implements
         this.seekBar.get().setOnSeekBarChangeListener(this);
         if (isPlaying()) {
             startSeekBarUpdates();
-        }
-    }
-
-    @Override
-    public void addPlaybackStateListener(PlaybackListener listener) {
-        playbackListeners.add(listener);
-    }
-
-    @Override
-    public void removePlaybackStateListener(PlaybackListener listener) {
-        playbackListeners.remove(listener);
-    }
-
-    private void notifyPlaybackListeners() {
-        for (PlaybackListener p : playbackListeners) {
-            p.onPlaybackStateChanged();
         }
     }
 

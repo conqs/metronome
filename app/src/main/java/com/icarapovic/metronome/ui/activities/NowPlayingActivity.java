@@ -1,5 +1,9 @@
 package com.icarapovic.metronome.ui.activities;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -8,15 +12,14 @@ import android.widget.SeekBar;
 
 import com.icarapovic.metronome.R;
 import com.icarapovic.metronome.service.MediaController;
-import com.icarapovic.metronome.service.PlaybackListener;
+import com.icarapovic.metronome.service.MediaService;
 import com.icarapovic.metronome.utils.MediaUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class NowPlayingActivity extends AppCompatActivity implements
-        PlaybackListener {
+public class NowPlayingActivity extends AppCompatActivity {
 
     @BindView(R.id.album_art)
     ImageView albumArt;
@@ -32,6 +35,7 @@ public class NowPlayingActivity extends AppCompatActivity implements
     Toolbar toolbar;
 
     private MediaController controller;
+    private BroadcastReceiver syncListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,24 +46,32 @@ public class NowPlayingActivity extends AppCompatActivity implements
         controller = MediaUtils.getMediaController();
         controller.setSeekBar(seekBar);
         setSupportActionBar(toolbar);
+
+        syncListener = createSyncListener();
+    }
+
+    private BroadcastReceiver createSyncListener() {
+        return new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent.getAction().equals(MediaService.ACTION_SYNC_STATE)) {
+                    onPlaybackStateChanged();
+                }
+            }
+        };
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+        registerReceiver(syncListener, new IntentFilter(MediaService.ACTION_SYNC_STATE));
         onPlaybackStateChanged();
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        controller.addPlaybackStateListener(this);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        controller.removePlaybackStateListener(this);
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(syncListener);
     }
 
     private void loadArtwork() {
@@ -129,7 +141,6 @@ public class NowPlayingActivity extends AppCompatActivity implements
         syncShuffleIcon();
     }
 
-    @Override
     public void onPlaybackStateChanged() {
         playPause.setImageResource(controller.isPlaying() ? R.drawable.ic_pause : R.drawable.ic_play);
         loadArtwork();

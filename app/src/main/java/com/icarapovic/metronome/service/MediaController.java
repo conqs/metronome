@@ -95,14 +95,4 @@ public interface MediaController extends SeekBar.OnSeekBarChangeListener {
      * Set SeekBar used to update playback time and support seeking
      */
     void setSeekBar(SeekBar seekBar);
-
-    /**
-     * Sets the listener to be notified on playback state change
-     */
-    void addPlaybackStateListener(PlaybackListener listener);
-
-    /**
-     * Removes the listener
-     */
-    void removePlaybackStateListener(PlaybackListener listener);
 }
