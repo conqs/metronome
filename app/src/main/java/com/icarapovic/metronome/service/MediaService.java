@@ -198,7 +198,7 @@ public class MediaService extends Service implements
             seekBarUpdateTask.cancel(true);
         }
 
-        if (seekBar == null) {
+        if (seekBar.get() == null) {
             return;
         }
 
