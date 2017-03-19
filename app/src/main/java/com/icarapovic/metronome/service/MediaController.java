@@ -1,12 +1,10 @@
 package com.icarapovic.metronome.service;
 
-import android.widget.SeekBar;
-
 import com.icarapovic.metronome.models.Song;
 
 import java.util.List;
 
-public interface MediaController extends SeekBar.OnSeekBarChangeListener {
+public interface MediaController {
 
     // Constants
     int REPEAT_OFF = 0;
@@ -92,9 +90,16 @@ public interface MediaController extends SeekBar.OnSeekBarChangeListener {
     void toggleRepeat();
 
     /**
-     * Set SeekBar used to update playback time and support seeking
+     * Seek media player to specific position in song
+     *
+     * @param position Position to which to seek
+     * */
+    void seekTo(int position);
+
+    /**
+     * Return current position in the active song
      */
-    void setSeekBar(SeekBar seekBar);
+    int getCurrentPlaybackPosition();
 
     /**
      * Retrieve current queue

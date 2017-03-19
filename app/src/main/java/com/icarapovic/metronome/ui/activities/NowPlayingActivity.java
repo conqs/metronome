@@ -16,11 +16,19 @@ import com.icarapovic.metronome.service.MediaController;
 import com.icarapovic.metronome.service.MediaService;
 import com.icarapovic.metronome.utils.MediaUtils;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class NowPlayingActivity extends AppCompatActivity {
+public class NowPlayingActivity extends AppCompatActivity
+        implements SeekBar.OnSeekBarChangeListener {
+
+    private static final int SEEK_BAR_FPS = 30;
 
     @BindView(R.id.album_art)
     ImageView albumArt;
@@ -37,6 +45,8 @@ public class NowPlayingActivity extends AppCompatActivity {
 
     private MediaController controller;
     private BroadcastReceiver syncListener;
+    private ScheduledExecutorService scheduledExecutor;
+    private ScheduledFuture<?> seekBarUpdateTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,10 +56,9 @@ public class NowPlayingActivity extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
         controller = MediaUtils.getMediaController();
-        controller.setSeekBar(seekBar);
-
-
+        seekBar.setOnSeekBarChangeListener(this);
         syncListener = createSyncListener();
+        scheduledExecutor = Executors.newSingleThreadScheduledExecutor();
     }
 
     private BroadcastReceiver createSyncListener() {
@@ -69,12 +78,14 @@ public class NowPlayingActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this)
                 .registerReceiver(syncListener, new IntentFilter(MediaService.ACTION_SYNC_STATE));
         onPlaybackStateChanged();
+        startSeekBarUpdates();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(syncListener);
+        seekBarUpdateTask.cancel(true);
     }
 
     private void loadArtwork() {
@@ -149,5 +160,38 @@ public class NowPlayingActivity extends AppCompatActivity {
         loadArtwork();
         syncRepeatIcon();
         syncShuffleIcon();
+    }
+
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+        if (fromUser) {
+            controller.seekTo(progress);
+        }
+    }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+        seekBarUpdateTask.cancel(true);
+        controller.pause();
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+        controller.play();
+        startSeekBarUpdates();
+    }
+
+    private void startSeekBarUpdates() {
+        if (seekBarUpdateTask != null) {
+            seekBarUpdateTask.cancel(true);
+        }
+
+        seekBar.setMax((int) controller.getActiveSong().getDuration());
+        seekBarUpdateTask = scheduledExecutor.scheduleAtFixedRate(new Runnable() {
+            @Override
+            public void run() {
+                seekBar.setProgress(controller.getCurrentPlaybackPosition());
+            }
+        }, 0, 1000 / SEEK_BAR_FPS, TimeUnit.MILLISECONDS);
     }
 }
