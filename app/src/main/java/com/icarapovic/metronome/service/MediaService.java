@@ -111,7 +111,7 @@ public class MediaService extends Service implements
             case AudioManager.AUDIOFOCUS_LOSS: {
                 if (isPlaying()) {
                     mediaPlayer.stop();
-                    dismissNotification();
+                    stopForeground(false);
                 }
                 break;
             }
@@ -151,7 +151,7 @@ public class MediaService extends Service implements
                     play(queue.get(++position));
                 } else {
                     mediaPlayer.reset();
-                    dismissNotification();
+                    stopForeground(false);
                 }
                 break;
             case REPEAT_ONE:
@@ -188,7 +188,7 @@ public class MediaService extends Service implements
         audioManager.abandonAudioFocus(this);
         unregisterReceiver(headphonesReceiver);
         NotificationManagerCompat.from(this).cancel(NOTIFICATION_ID);
-        dismissNotification();
+        stopForeground(true);
     }
 
     @Nullable
@@ -257,7 +257,6 @@ public class MediaService extends Service implements
     public void pause() {
         if (isPlaying()) {
             mediaPlayer.pause();
-            dismissNotification();
         }
     }
 
@@ -306,10 +305,6 @@ public class MediaService extends Service implements
 
     public void showNotification() {
         startForeground(NOTIFICATION_ID, getNotification());
-    }
-
-    public void dismissNotification() {
-        stopForeground(true);
     }
 
     private Notification getNotification() {
