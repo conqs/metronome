@@ -257,6 +257,7 @@ public class MediaService extends Service implements
     public void pause() {
         if (isPlaying()) {
             mediaPlayer.pause();
+            stopForeground(false);
         }
     }
 
@@ -314,7 +315,6 @@ public class MediaService extends Service implements
             notification = new NotificationCompat.Builder(this)
                     .setContentTitle("Metronome")
                     .setContentText("Music is playing")
-                    .setOngoing(true)
                     .setSmallIcon(R.drawable.ic_play)
                     .setContentIntent(createNowPlayingIntent())
                     .build();
