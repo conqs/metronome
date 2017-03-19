@@ -336,6 +336,11 @@ public class MediaService extends Service implements
     }
 
     @Override
+    public List<Song> getQueue() {
+        return queue;
+    }
+
+    @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
         if (fromUser) {
             mediaPlayer.seekTo(progress);

@@ -95,4 +95,11 @@ public interface MediaController extends SeekBar.OnSeekBarChangeListener {
      * Set SeekBar used to update playback time and support seeking
      */
     void setSeekBar(SeekBar seekBar);
+
+    /**
+     * Retrieve current queue
+     *
+     * @return Current queue list, may be empty
+     */
+    List<Song> getQueue();
 }
