@@ -9,12 +9,15 @@ import android.widget.TextView;
 
 import com.icarapovic.metronome.R;
 import com.icarapovic.metronome.models.Playlist;
+import com.icarapovic.metronome.models.Song;
 import com.icarapovic.metronome.provider.local.LocalMediaProvider;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
 
 public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHolder> {
 
@@ -37,11 +40,31 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
 
         Playlist playlist = mPlaylists.get(position);
         holder.playlistName.setText(playlist.getName());
+        updateSongCountOfPlaylist(holder.playlistSongCount, playlist.getId());
+    }
 
-        int playlistSongCount = LocalMediaProvider.getInstance()
-                .fetchSongsFromPlaylist(context, playlist.getId())
-                .size();
-        holder.PlaylistSongCount.setText(context.getString(R.string.label_song_count, playlistSongCount));
+    private void updateSongCountOfPlaylist(final TextView playlistSongCount, int playlistId) {
+        Observer<List<Song>> observer = new Observer<List<Song>>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+            }
+
+            @Override
+            public void onNext(List<Song> songs) {
+                playlistSongCount.setText(
+                        playlistSongCount.getContext().getString(R.string.label_song_count, songs.size()));
+            }
+
+            @Override
+            public void onError(Throwable e) {
+            }
+
+            @Override
+            public void onComplete() {
+            }
+        };
+
+        LocalMediaProvider.getInstance().fetchSongsFromPlaylist(playlistSongCount.getContext(), playlistId, observer);
     }
 
     @Override
@@ -54,7 +77,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
         @BindView(R.id.playlist_name)
         TextView playlistName;
         @BindView(R.id.playlist_song_count)
-        TextView PlaylistSongCount;
+        TextView playlistSongCount;
 
         public ViewHolder(View itemView) {
             super(itemView);

@@ -11,12 +11,17 @@ import android.view.ViewGroup;
 
 import com.icarapovic.metronome.R;
 import com.icarapovic.metronome.adapters.PlaylistAdapter;
+import com.icarapovic.metronome.models.Playlist;
 import com.icarapovic.metronome.provider.local.LocalMediaProvider;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
 
-public class PlaylistFragment extends Fragment {
+public class PlaylistFragment extends Fragment implements Observer<List<Playlist>> {
     public static final String TAG = "com.icarapovic.metronome.PLAYLIST_FRAGMENT";
 
     @BindView(R.id.recycler_playlist)
@@ -41,8 +46,25 @@ public class PlaylistFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        PlaylistAdapter adapter = new PlaylistAdapter(LocalMediaProvider.getInstance().fetchPlaylists(getContext()));
+        LocalMediaProvider.getInstance().fetchPlaylists(getContext(), this);
+    }
+
+    @Override
+    public void onSubscribe(Disposable d) {
+    }
+
+    @Override
+    public void onNext(List<Playlist> playlists) {
+        PlaylistAdapter adapter = new PlaylistAdapter(playlists);
         mPlaylistRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
         mPlaylistRecycler.setAdapter(adapter);
+    }
+
+    @Override
+    public void onError(Throwable e) {
+    }
+
+    @Override
+    public void onComplete() {
     }
 }

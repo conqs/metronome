@@ -121,194 +121,86 @@ public class LocalMediaProvider implements MediaProvider {
     }
 
     @Override
-    public List<Song> fetchSongsFromAlbum(Context context, int albumId) {
-        List<Song> songs = new ArrayList<>();
-
-        Cursor cursor = context.getContentResolver().query(
-                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                Projections.SONG,
-                MediaStore.Audio.Media.ALBUM_ID + " = ?", // WHERE albumId = ?
-                new String[albumId],  // fills the ? in previous line
-                MediaStore.Audio.AudioColumns.TITLE + " ASC"
-        );
-
-        if (cursor != null) {
-            Song song;
-            while (cursor.moveToNext()) {
-                song = new Song.Builder()
-                        .setId(cursor.getInt(0))
-                        .setTitle(cursor.getString(1))
-                        .setAlbumId(cursor.getInt(2))
-                        .setAlbum(cursor.getString(3))
-                        .setArtistId(cursor.getInt(4))
-                        .setArtist(cursor.getString(5))
-                        .setDuration(cursor.getLong(6))
-                        .setPath(cursor.getString(7))
-                        .setDateAdded(cursor.getLong(8))
-                        .build();
-                songs.add(song);
+    public void fetchSongsFromAlbum(final Context context, final int albumId, Observer<List<Song>> observer) {
+        final Observable<List<Song>> songs = Observable.create(new ObservableOnSubscribe<List<Song>>() {
+            @Override
+            public void subscribe(@NonNull ObservableEmitter<List<Song>> e) throws Exception {
+                e.onNext(loadSongsFromAlbum(context, albumId));
+                e.onComplete();
             }
+        });
 
-            cursor.close();
-        }
-
-        return songs;
+        songs.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer);
     }
 
     @Override
-    public List<Song> fetchSongsFromArtist(Context context, int artistId) {
-        List<Song> songs = new ArrayList<>();
-
-        Cursor cursor = context.getContentResolver().query(
-                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                Projections.SONG,
-                MediaStore.Audio.Media.ARTIST_ID + " = ?",
-                new String[artistId],
-                MediaStore.Audio.AudioColumns.TITLE + " ASC"
-        );
-
-        if (cursor != null) {
-            Song song;
-            while (cursor.moveToNext()) {
-                song = new Song.Builder()
-                        .setId(cursor.getInt(0))
-                        .setTitle(cursor.getString(1))
-                        .setAlbumId(cursor.getInt(2))
-                        .setAlbum(cursor.getString(3))
-                        .setArtistId(cursor.getInt(4))
-                        .setArtist(cursor.getString(5))
-                        .setDuration(cursor.getLong(6))
-                        .setPath(cursor.getString(7))
-                        .setDateAdded(cursor.getLong(8))
-                        .build();
-                songs.add(song);
+    public void fetchSongsFromArtist(final Context context, final int artistId, Observer<List<Song>> observer) {
+        final Observable<List<Song>> songs = Observable.create(new ObservableOnSubscribe<List<Song>>() {
+            @Override
+            public void subscribe(@NonNull ObservableEmitter<List<Song>> e) throws Exception {
+                e.onNext(loadSongsFromArtist(context, artistId));
+                e.onComplete();
             }
+        });
 
-            cursor.close();
-        }
-
-        return songs;
+        songs.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer);
     }
 
     @Override
-    public List<Song> fetchSongsFromGenre(Context context, int genreId) {
-        List<Song> songs = new ArrayList<>();
-
-        Uri uri = MediaStore.Audio.Genres.Members.getContentUri("external", genreId);
-
-        Cursor cursor = context.getContentResolver().query(
-                uri,
-                Projections.SONG,
-                null,
-                null,
-                MediaStore.Audio.AudioColumns.TITLE + " ASC"
-        );
-
-        if (cursor != null) {
-            Song song;
-            while (cursor.moveToNext()) {
-                song = new Song.Builder()
-                        .setId(cursor.getInt(0))
-                        .setTitle(cursor.getString(1))
-                        .setAlbumId(cursor.getInt(2))
-                        .setAlbum(cursor.getString(3))
-                        .setArtistId(cursor.getInt(4))
-                        .setArtist(cursor.getString(5))
-                        .setDuration(cursor.getLong(6))
-                        .setPath(cursor.getString(7))
-                        .setDateAdded(cursor.getLong(8))
-                        .build();
-                songs.add(song);
+    public void fetchSongsFromGenre(final Context context, final int genreId, Observer<List<Song>> observer) {
+        final Observable<List<Song>> songs = Observable.create(new ObservableOnSubscribe<List<Song>>() {
+            @Override
+            public void subscribe(@NonNull ObservableEmitter<List<Song>> e) throws Exception {
+                e.onNext(loadSongsFromGenre(context, genreId));
+                e.onComplete();
             }
+        });
 
-            cursor.close();
-        }
-
-        return songs;
+        songs.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer);
     }
 
     @Override
-    public List<Song> fetchSongsFromPlaylist(Context context, int playlistId) {
-        List<Song> songs = new ArrayList<>();
-
-        Uri uri = MediaStore.Audio.Playlists.Members.getContentUri("external", playlistId);
-
-        Cursor cursor = context.getContentResolver().query(
-                uri,
-                Projections.SONG,
-                null,
-                null,
-                MediaStore.Audio.AudioColumns.TITLE + " ASC");
-
-        if (cursor != null) {
-            Song song;
-            while (cursor.moveToNext()) {
-                song = new Song.Builder()
-                        .setId(cursor.getInt(0))
-                        .setTitle(cursor.getString(1))
-                        .setAlbumId(cursor.getInt(2))
-                        .setAlbum(cursor.getString(3))
-                        .setArtistId(cursor.getInt(4))
-                        .setArtist(cursor.getString(5))
-                        .setDuration(cursor.getLong(6))
-                        .setPath(cursor.getString(7))
-                        .setDateAdded(cursor.getLong(8))
-                        .build();
-                songs.add(song);
+    public void fetchSongsFromPlaylist(final Context context, final int playlistId, Observer<List<Song>> observer) {
+        final Observable<List<Song>> songs = Observable.create(new ObservableOnSubscribe<List<Song>>() {
+            @Override
+            public void subscribe(@NonNull ObservableEmitter<List<Song>> e) throws Exception {
+                e.onNext(loadSongsFromPlaylist(context, playlistId));
+                e.onComplete();
             }
+        });
 
-            cursor.close();
-        }
-
-        return songs;
-
+        songs.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer);
     }
 
     @Override
-    public List<Album> getAlbumsFromArtist(Context context, int artistId) {
-        List<Album> albums = new ArrayList<>();
-
-        Cursor c1 = context.getContentResolver().query(
-                MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI,
-                new String[]{MediaStore.Audio.Artists._ID, MediaStore.Audio.ArtistColumns.ARTIST},
-                MediaStore.Audio.Artists._ID + "= ?",
-                new String[]{String.valueOf(artistId)},
-                null
-        );
-
-        String artist;
-        if (c1 != null) {
-            artist = c1.getString(1);
-            c1.close();
-        } else {
-            return albums;
-        }
-
-        Cursor c = context.getContentResolver().query(
-                MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
-                Projections.ALBUM,
-                MediaStore.Audio.AlbumColumns.ARTIST + " = ?",
-                new String[]{artist},
-                null
-        );
-
-        if (c != null) {
-            Album album;
-            while (c.moveToNext()) {
-                album = new Album.Builder()
-                        .setAlbumId(c.getInt(0))
-                        .setAlbumTitle(c.getString(1))
-                        .setAlbumArt(c.getString(2))
-                        .setArtist(c.getString(3))
-                        .setNumberOfSongs(c.getInt(4))
-                        .build();
-                cachedAlbumList.add(album);
+    public void fetchAlbumsFromArtist(final Context context, final int artistId, Observer<List<Album>> observer) {
+        final Observable<List<Album>> albums = Observable.create(new ObservableOnSubscribe<List<Album>>() {
+            @Override
+            public void subscribe(@NonNull ObservableEmitter<List<Album>> e) throws Exception {
+                e.onNext(loadAlbumsFromArtist(context, artistId));
+                e.onComplete();
             }
+        });
 
-            c.close();
-        }
+        albums.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer);
+    }
 
-        return cachedAlbumList;
+    @Override
+    public void clearCache() {
+        cachedSongList = null;
+        cachedAlbumList = null;
+        cachedArtistList = null;
+        cachedGenreList = null;
     }
 
     private List<Song> loadSongs(Context context) {
@@ -453,12 +345,190 @@ public class LocalMediaProvider implements MediaProvider {
         return cachedPlaylists;
     }
 
-    @Override
-    public void clearCache() {
-        cachedSongList = null;
-        cachedAlbumList = null;
-        cachedArtistList = null;
-        cachedGenreList = null;
+    private List<Song> loadSongsFromAlbum(Context context, int albumId) {
+        List<Song> songs = new ArrayList<>();
+
+        Cursor cursor = context.getContentResolver().query(
+                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                Projections.SONG,
+                MediaStore.Audio.Media.ALBUM_ID + " = ?", // WHERE albumId = ?
+                new String[albumId],  // fills the ? in previous line
+                MediaStore.Audio.AudioColumns.TITLE + " ASC"
+        );
+
+        if (cursor != null) {
+            Song song;
+            while (cursor.moveToNext()) {
+                song = new Song.Builder()
+                        .setId(cursor.getInt(0))
+                        .setTitle(cursor.getString(1))
+                        .setAlbumId(cursor.getInt(2))
+                        .setAlbum(cursor.getString(3))
+                        .setArtistId(cursor.getInt(4))
+                        .setArtist(cursor.getString(5))
+                        .setDuration(cursor.getLong(6))
+                        .setPath(cursor.getString(7))
+                        .setDateAdded(cursor.getLong(8))
+                        .build();
+                songs.add(song);
+            }
+
+            cursor.close();
+        }
+
+        return songs;
+    }
+
+    private List<Song> loadSongsFromArtist(Context context, int artistId) {
+        List<Song> songs = new ArrayList<>();
+
+        Cursor cursor = context.getContentResolver().query(
+                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                Projections.SONG,
+                MediaStore.Audio.Media.ARTIST_ID + " = ?",
+                new String[artistId],
+                MediaStore.Audio.AudioColumns.TITLE + " ASC"
+        );
+
+        if (cursor != null) {
+            Song song;
+            while (cursor.moveToNext()) {
+                song = new Song.Builder()
+                        .setId(cursor.getInt(0))
+                        .setTitle(cursor.getString(1))
+                        .setAlbumId(cursor.getInt(2))
+                        .setAlbum(cursor.getString(3))
+                        .setArtistId(cursor.getInt(4))
+                        .setArtist(cursor.getString(5))
+                        .setDuration(cursor.getLong(6))
+                        .setPath(cursor.getString(7))
+                        .setDateAdded(cursor.getLong(8))
+                        .build();
+                songs.add(song);
+            }
+
+            cursor.close();
+        }
+
+        return songs;
+    }
+
+    private List<Song> loadSongsFromGenre(Context context, int genreId) {
+        List<Song> songs = new ArrayList<>();
+
+        Uri uri = MediaStore.Audio.Genres.Members.getContentUri("external", genreId);
+
+        Cursor cursor = context.getContentResolver().query(
+                uri,
+                Projections.SONG,
+                null,
+                null,
+                MediaStore.Audio.AudioColumns.TITLE + " ASC"
+        );
+
+        if (cursor != null) {
+            Song song;
+            while (cursor.moveToNext()) {
+                song = new Song.Builder()
+                        .setId(cursor.getInt(0))
+                        .setTitle(cursor.getString(1))
+                        .setAlbumId(cursor.getInt(2))
+                        .setAlbum(cursor.getString(3))
+                        .setArtistId(cursor.getInt(4))
+                        .setArtist(cursor.getString(5))
+                        .setDuration(cursor.getLong(6))
+                        .setPath(cursor.getString(7))
+                        .setDateAdded(cursor.getLong(8))
+                        .build();
+                songs.add(song);
+            }
+
+            cursor.close();
+        }
+
+        return songs;
+    }
+
+    private List<Song> loadSongsFromPlaylist(Context context, int playlistId) {
+        List<Song> songs = new ArrayList<>();
+
+        Uri uri = MediaStore.Audio.Playlists.Members.getContentUri("external", playlistId);
+
+        Cursor cursor = context.getContentResolver().query(
+                uri,
+                Projections.SONG,
+                null,
+                null,
+                MediaStore.Audio.AudioColumns.TITLE + " ASC");
+
+        if (cursor != null) {
+            Song song;
+            while (cursor.moveToNext()) {
+                song = new Song.Builder()
+                        .setId(cursor.getInt(0))
+                        .setTitle(cursor.getString(1))
+                        .setAlbumId(cursor.getInt(2))
+                        .setAlbum(cursor.getString(3))
+                        .setArtistId(cursor.getInt(4))
+                        .setArtist(cursor.getString(5))
+                        .setDuration(cursor.getLong(6))
+                        .setPath(cursor.getString(7))
+                        .setDateAdded(cursor.getLong(8))
+                        .build();
+                songs.add(song);
+            }
+
+            cursor.close();
+        }
+
+        return songs;
+
+    }
+
+    public List<Album> loadAlbumsFromArtist(Context context, int artistId) {
+        List<Album> albums = new ArrayList<>();
+
+        Cursor c1 = context.getContentResolver().query(
+                MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI,
+                new String[]{MediaStore.Audio.Artists._ID, MediaStore.Audio.ArtistColumns.ARTIST},
+                MediaStore.Audio.Artists._ID + "= ?",
+                new String[]{String.valueOf(artistId)},
+                null
+        );
+
+        String artist;
+        if (c1 != null) {
+            artist = c1.getString(1);
+            c1.close();
+        } else {
+            return albums;
+        }
+
+        Cursor c = context.getContentResolver().query(
+                MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
+                Projections.ALBUM,
+                MediaStore.Audio.AlbumColumns.ARTIST + " = ?",
+                new String[]{artist},
+                null
+        );
+
+        if (c != null) {
+            Album album;
+            while (c.moveToNext()) {
+                album = new Album.Builder()
+                        .setAlbumId(c.getInt(0))
+                        .setAlbumTitle(c.getString(1))
+                        .setAlbumArt(c.getString(2))
+                        .setArtist(c.getString(3))
+                        .setNumberOfSongs(c.getInt(4))
+                        .build();
+                cachedAlbumList.add(album);
+            }
+
+            c.close();
+        }
+
+        return cachedAlbumList;
     }
 
     private Cursor getSongCursor(Context context) {

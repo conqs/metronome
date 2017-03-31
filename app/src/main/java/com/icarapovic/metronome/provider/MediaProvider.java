@@ -24,15 +24,15 @@ public interface MediaProvider {
 
     void fetchPlaylists(Context context, Observer<List<Playlist>> observer);
 
-    List<Song> fetchSongsFromAlbum(Context context, int albumId);
+    void fetchSongsFromAlbum(Context context, int albumId, Observer<List<Song>> observer);
 
-    List<Song> fetchSongsFromArtist(Context context, int artistId);
+    void fetchSongsFromArtist(Context context, int artistId, Observer<List<Song>> observer);
 
-    List<Song> fetchSongsFromGenre(Context context, int genreId);
+    void fetchSongsFromGenre(Context context, int genreId, Observer<List<Song>> observer);
 
-    List<Song> fetchSongsFromPlaylist(Context context, int playlistId);
+    void fetchSongsFromPlaylist(Context context, int playlistId, Observer<List<Song>> observer);
 
-    List<Album> getAlbumsFromArtist(Context context, int artistId);
+    void fetchAlbumsFromArtist(Context context, int artistId, Observer<List<Album>> observer);
 
     void clearCache();
 

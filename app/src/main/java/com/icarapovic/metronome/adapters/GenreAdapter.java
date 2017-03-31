@@ -1,6 +1,5 @@
 package com.icarapovic.metronome.adapters;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,12 +8,15 @@ import android.widget.TextView;
 
 import com.icarapovic.metronome.R;
 import com.icarapovic.metronome.models.Genre;
+import com.icarapovic.metronome.models.Song;
 import com.icarapovic.metronome.provider.local.LocalMediaProvider;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
 
 public class GenreAdapter extends RecyclerView.Adapter<GenreAdapter.ViewHolder> {
 
@@ -34,13 +36,31 @@ public class GenreAdapter extends RecyclerView.Adapter<GenreAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Genre genre = mGenres.get(position);
-        Context context = holder.genreName.getContext();
         holder.genreName.setText(genre.getGenreName());
+        updateSongCountOfGenre(holder.genreSongCount, genre.getGenreId());
+    }
 
-        int genreSongCount = LocalMediaProvider.getInstance()
-                .fetchSongsFromGenre(context, genre.getGenreId())
-                .size();
-        holder.genreSongCount.setText(context.getString(R.string.label_song_count, genreSongCount));
+    private void updateSongCountOfGenre(final TextView view, int genreId) {
+        Observer<List<Song>> observer = new Observer<List<Song>>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+            }
+
+            @Override
+            public void onNext(List<Song> genres) {
+                view.setText(view.getContext().getString(R.string.label_song_count, genres.size()));
+            }
+
+            @Override
+            public void onError(Throwable e) {
+            }
+
+            @Override
+            public void onComplete() {
+            }
+        };
+
+        LocalMediaProvider.getInstance().fetchSongsFromGenre(view.getContext(), genreId, observer);
     }
 
     @Override
