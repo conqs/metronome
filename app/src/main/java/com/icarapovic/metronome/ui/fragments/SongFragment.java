@@ -18,8 +18,10 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
 
-public class SongFragment extends Fragment {
+public class SongFragment extends Fragment implements Observer<List<Song>> {
     public static final String TAG = "com.icarapovic.metronome.SONG_FRAGMENT";
     private static final String FRAGMENT_TITLE = "Songs";
 
@@ -44,10 +46,30 @@ public class SongFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        List<Song> songs = LocalMediaProvider.getInstance().fetchSongs(getContext());
+        LocalMediaProvider.getInstance().fetchSongs(getContext(), this);
+
+    }
+
+    @Override
+    public void onSubscribe(Disposable d) {
+        // Not needed, there is no reason to cancel the request
+    }
+
+    @Override
+    public void onNext(List<Song> songs) {
         // create adapter and set it to the recycler view
         SongAdapter adapter = new SongAdapter(songs);
         songRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
         songRecycler.setAdapter(adapter);
+    }
+
+    @Override
+    public void onError(Throwable e) {
+        // TODO
+    }
+
+    @Override
+    public void onComplete() {
+        // Nothing to do here...
     }
 }

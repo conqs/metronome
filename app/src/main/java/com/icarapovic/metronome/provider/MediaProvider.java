@@ -10,17 +10,19 @@ import com.icarapovic.metronome.models.Song;
 
 import java.util.List;
 
+import io.reactivex.Observer;
+
 public interface MediaProvider {
 
-    List<Song> fetchSongs(Context context);
+    void fetchSongs(Context context, Observer<List<Song>> observer);
 
-    List<Artist> fetchArtists(Context context);
+    void fetchArtists(Context context, Observer<List<Artist>> observer);
 
-    List<Album> fetchAlbums(Context context);
+    void fetchAlbums(Context context, Observer<List<Album>> observer);
 
-    List<Genre> fetchGenres(Context context);
+    void fetchGenres(Context context, Observer<List<Genre>> observer);
 
-    List<Playlist> fetchPlaylists(Context context);
+    void fetchPlaylists(Context context, Observer<List<Playlist>> observer);
 
     List<Song> fetchSongsFromAlbum(Context context, int albumId);
 

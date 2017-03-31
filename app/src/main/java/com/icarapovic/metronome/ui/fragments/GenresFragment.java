@@ -11,12 +11,17 @@ import android.view.ViewGroup;
 
 import com.icarapovic.metronome.R;
 import com.icarapovic.metronome.adapters.GenreAdapter;
+import com.icarapovic.metronome.models.Genre;
 import com.icarapovic.metronome.provider.local.LocalMediaProvider;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
 
-public class GenresFragment extends Fragment {
+public class GenresFragment extends Fragment implements Observer<List<Genre>> {
     public static final String TAG = "com.icarapovic.metronome.GENRE_FRAGMENT";
 
     @BindView(R.id.recycler_genres)
@@ -41,8 +46,28 @@ public class GenresFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        GenreAdapter adapter = new GenreAdapter(LocalMediaProvider.getInstance().fetchGenres(getContext()));
+        LocalMediaProvider.getInstance().fetchGenres(getContext(), this);
+    }
+
+    @Override
+    public void onSubscribe(Disposable d) {
+
+    }
+
+    @Override
+    public void onNext(List<Genre> genres) {
+        GenreAdapter adapter = new GenreAdapter(genres);
         mGenresRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
         mGenresRecycler.setAdapter(adapter);
+    }
+
+    @Override
+    public void onError(Throwable e) {
+
+    }
+
+    @Override
+    public void onComplete() {
+
     }
 }

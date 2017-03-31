@@ -11,12 +11,17 @@ import android.view.ViewGroup;
 
 import com.icarapovic.metronome.R;
 import com.icarapovic.metronome.adapters.ArtistAdapter;
+import com.icarapovic.metronome.models.Artist;
 import com.icarapovic.metronome.provider.local.LocalMediaProvider;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
 
-public class ArtistFragment extends Fragment {
+public class ArtistFragment extends Fragment implements Observer<List<Artist>> {
     public static final String TAG = "com.icarapovic.metronome.ARTIST_FRAGMENT";
 
     @BindView(R.id.recycler_artist)
@@ -41,8 +46,28 @@ public class ArtistFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        ArtistAdapter adapter = new ArtistAdapter(LocalMediaProvider.getInstance().fetchArtists(getContext()));
+        LocalMediaProvider.getInstance().fetchArtists(getContext(), this);
+    }
+
+    @Override
+    public void onSubscribe(Disposable d) {
+
+    }
+
+    @Override
+    public void onNext(List<Artist> artists) {
+        ArtistAdapter adapter = new ArtistAdapter(artists);
         mArtistRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
         mArtistRecycler.setAdapter(adapter);
+    }
+
+    @Override
+    public void onError(Throwable e) {
+
+    }
+
+    @Override
+    public void onComplete() {
+
     }
 }

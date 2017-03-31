@@ -15,6 +15,14 @@ import com.icarapovic.metronome.provider.MediaProvider;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.schedulers.Schedulers;
+
 public class LocalMediaProvider implements MediaProvider {
 
     private static LocalMediaProvider INSTANCE;
@@ -38,150 +46,78 @@ public class LocalMediaProvider implements MediaProvider {
     }
 
     @Override
-    public List<Song> fetchSongs(Context context) {
-        // if cached, return cache immediately
-        if (cachedSongList != null) {
-            return cachedSongList;
-        } else {
-            cachedSongList = new ArrayList<>();
-        }
-
-        Cursor cursor = getSongCursor(context);
-
-        if (cursor != null) {
-            Song song;
-
-            // build song object for each db entry
-            while (cursor.moveToNext()) {
-                song = new Song.Builder()
-                        .setId(cursor.getInt(0))
-                        .setTitle(cursor.getString(1))
-                        .setAlbumId(cursor.getInt(2))
-                        .setAlbum(cursor.getString(3))
-                        .setArtistId(cursor.getInt(4))
-                        .setArtist(cursor.getString(5))
-                        .setDuration(cursor.getLong(6))
-                        .setPath(cursor.getString(7))
-                        .setDateAdded(cursor.getLong(8))
-                        .setFileSize(cursor.getLong(9))
-                        .build();
-
-                // fill cache
-                cachedSongList.add(song);
+    public void fetchSongs(final Context context, Observer<List<Song>> observer) {
+        final Observable<List<Song>> songs = Observable.create(new ObservableOnSubscribe<List<Song>>() {
+            @Override
+            public void subscribe(@NonNull ObservableEmitter<List<Song>> e) throws Exception {
+                e.onNext(loadSongs(context));
+                e.onComplete();
             }
-            // close data set
-            cursor.close();
-        }
+        });
 
-        return cachedSongList;
+        songs.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer);
     }
 
     @Override
-    public List<Artist> fetchArtists(Context context) {
-
-        if (cachedArtistList != null) {
-            return cachedArtistList;
-        } else {
-            cachedArtistList = new ArrayList<>();
-        }
-
-        Cursor cursor = getArtistCursor(context);
-
-        if (cursor != null) {
-            Artist artist;
-            while (cursor.moveToNext()) {
-                artist = new Artist.Builder()
-                        .setId(cursor.getInt(0))
-                        .setArtistName(cursor.getString(1))
-                        .setNumberOfAlbums(cursor.getInt(2))
-                        .setNumberOfSongs(cursor.getInt(3))
-                        .build();
-                cachedArtistList.add(artist);
+    public void fetchArtists(final Context context, Observer<List<Artist>> observer) {
+        final Observable<List<Artist>> artists = Observable.create(new ObservableOnSubscribe<List<Artist>>() {
+            @Override
+            public void subscribe(@NonNull ObservableEmitter<List<Artist>> e) throws Exception {
+                e.onNext(loadArtists(context));
+                e.onComplete();
             }
+        });
 
-            cursor.close();
-        }
-
-
-        return cachedArtistList;
+        artists.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer);
     }
 
     @Override
-    public List<Album> fetchAlbums(Context context) {
-        if (cachedAlbumList != null) {
-            return cachedAlbumList;
-        } else {
-            cachedAlbumList = new ArrayList<>();
-        }
-
-        Cursor c = getAlbumCursor(context);
-
-        if (c != null) {
-            Album album;
-            while (c.moveToNext()) {
-                album = new Album.Builder()
-                        .setAlbumId(c.getInt(0))
-                        .setAlbumTitle(c.getString(1))
-                        .setAlbumArt(c.getString(2))
-                        .setArtist(c.getString(3))
-                        .setNumberOfSongs(c.getInt(4))
-                        .build();
-                cachedAlbumList.add(album);
+    public void fetchAlbums(final Context context, Observer<List<Album>> observer) {
+        Observable<List<Album>> albums = Observable.create(new ObservableOnSubscribe<List<Album>>() {
+            @Override
+            public void subscribe(@NonNull ObservableEmitter<List<Album>> e) throws Exception {
+                e.onNext(loadAlbums(context));
+                e.onComplete();
             }
+        });
 
-            c.close();
-        }
-
-        return cachedAlbumList;
+        albums.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer);
     }
 
     @Override
-    public List<Genre> fetchGenres(Context context) {
-        if (cachedGenreList != null) {
-            return cachedGenreList;
-        } else {
-            cachedGenreList = new ArrayList<>();
-        }
-
-        Cursor c = getGenreCursor(context);
-
-        if (c != null) {
-            while (c.moveToNext()) {
-                cachedGenreList.add(new Genre(c.getInt(0), c.getString(1)));
+    public void fetchGenres(final Context context, Observer<List<Genre>> observer) {
+        Observable<List<Genre>> genres = Observable.create(new ObservableOnSubscribe<List<Genre>>() {
+            @Override
+            public void subscribe(@NonNull ObservableEmitter<List<Genre>> e) throws Exception {
+                e.onNext(loadGenres(context));
+                e.onComplete();
             }
-            c.close();
-        }
+        });
 
-        return cachedGenreList;
+        genres.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer);
     }
 
     @Override
-    public List<Playlist> fetchPlaylists(Context context) {
-        if (cachedPlaylists != null) {
-            return cachedPlaylists;
-        } else {
-            cachedPlaylists = new ArrayList<>();
-        }
-
-        Cursor c = getPlaylistCursor(context);
-
-        if (c != null) {
-            Playlist playlist;
-            while (c.moveToNext()) {
-                playlist = new Playlist.Builder()
-                        .setId(c.getInt(0))
-                        .setName(c.getString(1))
-                        .setUri(c.getString(2))
-                        .setDateAdded(c.getLong(3))
-                        .setDateModified(c.getLong(4))
-                        .build();
-
-                cachedPlaylists.add(playlist);
+    public void fetchPlaylists(final Context context, Observer<List<Playlist>> observer) {
+        Observable<List<Playlist>> playlists = Observable.create(new ObservableOnSubscribe<List<Playlist>>() {
+            @Override
+            public void subscribe(@NonNull ObservableEmitter<List<Playlist>> e) throws Exception {
+                e.onNext(loadPlaylists(context));
+                e.onComplete();
             }
-            c.close();
-        }
+        });
 
-        return cachedPlaylists;
+        playlists.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer);
     }
 
     @Override
@@ -373,6 +309,148 @@ public class LocalMediaProvider implements MediaProvider {
         }
 
         return cachedAlbumList;
+    }
+
+    private List<Song> loadSongs(Context context) {
+        // if cached, return cache immediately
+        if (cachedSongList != null) {
+            return cachedSongList;
+        } else {
+            cachedSongList = new ArrayList<>();
+        }
+
+        Cursor cursor = getSongCursor(context);
+
+        if (cursor != null) {
+            Song song;
+
+            // build song object for each db entry
+            while (cursor.moveToNext()) {
+                song = new Song.Builder()
+                        .setId(cursor.getInt(0))
+                        .setTitle(cursor.getString(1))
+                        .setAlbumId(cursor.getInt(2))
+                        .setAlbum(cursor.getString(3))
+                        .setArtistId(cursor.getInt(4))
+                        .setArtist(cursor.getString(5))
+                        .setDuration(cursor.getLong(6))
+                        .setPath(cursor.getString(7))
+                        .setDateAdded(cursor.getLong(8))
+                        .setFileSize(cursor.getLong(9))
+                        .build();
+
+                // fill cache
+                cachedSongList.add(song);
+            }
+            // close data set
+            cursor.close();
+        }
+
+        return cachedSongList;
+    }
+
+    private List<Artist> loadArtists(Context context) {
+
+        if (cachedArtistList != null) {
+            return cachedArtistList;
+        } else {
+            cachedArtistList = new ArrayList<>();
+        }
+
+        Cursor cursor = getArtistCursor(context);
+
+        if (cursor != null) {
+            Artist artist;
+            while (cursor.moveToNext()) {
+                artist = new Artist.Builder()
+                        .setId(cursor.getInt(0))
+                        .setArtistName(cursor.getString(1))
+                        .setNumberOfAlbums(cursor.getInt(2))
+                        .setNumberOfSongs(cursor.getInt(3))
+                        .build();
+                cachedArtistList.add(artist);
+            }
+
+            cursor.close();
+        }
+
+
+        return cachedArtistList;
+    }
+
+    private List<Album> loadAlbums(Context context) {
+        if (cachedAlbumList != null) {
+            return cachedAlbumList;
+        } else {
+            cachedAlbumList = new ArrayList<>();
+        }
+
+        Cursor c = getAlbumCursor(context);
+
+        if (c != null) {
+            Album album;
+            while (c.moveToNext()) {
+                album = new Album.Builder()
+                        .setAlbumId(c.getInt(0))
+                        .setAlbumTitle(c.getString(1))
+                        .setAlbumArt(c.getString(2))
+                        .setArtist(c.getString(3))
+                        .setNumberOfSongs(c.getInt(4))
+                        .build();
+                cachedAlbumList.add(album);
+            }
+
+            c.close();
+        }
+
+        return cachedAlbumList;
+    }
+
+    private List<Genre> loadGenres(Context context) {
+        if (cachedGenreList != null) {
+            return cachedGenreList;
+        } else {
+            cachedGenreList = new ArrayList<>();
+        }
+
+        Cursor c = getGenreCursor(context);
+
+        if (c != null) {
+            while (c.moveToNext()) {
+                cachedGenreList.add(new Genre(c.getInt(0), c.getString(1)));
+            }
+            c.close();
+        }
+
+        return cachedGenreList;
+    }
+
+    private List<Playlist> loadPlaylists(Context context) {
+        if (cachedPlaylists != null) {
+            return cachedPlaylists;
+        } else {
+            cachedPlaylists = new ArrayList<>();
+        }
+
+        Cursor c = getPlaylistCursor(context);
+
+        if (c != null) {
+            Playlist playlist;
+            while (c.moveToNext()) {
+                playlist = new Playlist.Builder()
+                        .setId(c.getInt(0))
+                        .setName(c.getString(1))
+                        .setUri(c.getString(2))
+                        .setDateAdded(c.getLong(3))
+                        .setDateModified(c.getLong(4))
+                        .build();
+
+                cachedPlaylists.add(playlist);
+            }
+            c.close();
+        }
+
+        return cachedPlaylists;
     }
 
     @Override
