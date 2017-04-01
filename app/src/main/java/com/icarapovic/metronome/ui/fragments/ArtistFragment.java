@@ -23,6 +23,7 @@ import io.reactivex.disposables.Disposable;
 
 public class ArtistFragment extends Fragment implements Observer<List<Artist>> {
     public static final String TAG = "com.icarapovic.metronome.ARTIST_FRAGMENT";
+    private static final String FRAGMENT_TITLE = "Artist";
 
     @BindView(R.id.recycler_artist)
     RecyclerView mArtistRecycler;
@@ -32,8 +33,7 @@ public class ArtistFragment extends Fragment implements Observer<List<Artist>> {
     }
 
     public static String getTitle() {
-        // TODO extract
-        return "Artist";
+        return FRAGMENT_TITLE;
     }
 
     @Nullable

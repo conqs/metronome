@@ -23,6 +23,7 @@ import io.reactivex.disposables.Disposable;
 
 public class PlaylistFragment extends Fragment implements Observer<List<Playlist>> {
     public static final String TAG = "com.icarapovic.metronome.PLAYLIST_FRAGMENT";
+    private static final String FRAGMENT_TITLE = "Playlists";
 
     @BindView(R.id.recycler_playlist)
     RecyclerView mPlaylistRecycler;
@@ -32,8 +33,7 @@ public class PlaylistFragment extends Fragment implements Observer<List<Playlist
     }
 
     public static String getTitle() {
-        // TODO extract
-        return "Playlists";
+        return FRAGMENT_TITLE;
     }
 
     @Nullable
